@@ -1,0 +1,16 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    font-size: 23rem;
+
+}
+
+.container {
+    flex: 1 0 auto;
+}
+
+.footer {
+    flex-shrink: 0;
+}
