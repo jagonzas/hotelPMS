@@ -13,9 +13,9 @@ class Service(models.Model):
 
 class UserProfile(models.Model):
     USER_CLASSES = [
-        ('customer', 'Customer'),
-        ('staff', 'Staff'),
-        ('management', 'Management'),
+        ('customer','Customer'),
+        ('staff','Staff'),
+        ('management','Management'),
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     user_class = models.CharField(max_length=20, choices=USER_CLASSES)

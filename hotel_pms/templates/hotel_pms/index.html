@@ -34,6 +34,22 @@
                     <a class="nav-link" href="{% url 'register' %}">Register</a>
                 </li>
 
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <p>Logged In</p>
+                {% else %}
+                <p>Not Logged In</p>{% endif %}
+                 {% if user.is_authenticated%}
+                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage' %}">Manage Rooms</a>
+                 </li>
+                {% endif %} 
+
+
                 {% comment %} <li class="nav-item">
                     <a class="nav-link" href="{% url 'settings' %}">Settings</a>
                 </li>

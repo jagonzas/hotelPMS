@@ -37,3 +37,6 @@ def login_view(request):
             messages.error(request,"Invalid username or password.")
     else:
         return render(request, 'hotel_pms/login.html')
+
+def managerooms(request):
+    return render(request,'hotel_pms/login.html')

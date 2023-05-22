@@ -27,5 +27,6 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('register/', views.register, name='register'),
     path('login/', login_view, name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='hotel_pms/logout.html'), name='logout')
+    path('manage/',views.managerooms, name='manage'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
 ]
