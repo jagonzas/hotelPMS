@@ -5,8 +5,11 @@ from django.contrib.auth import authenticate, login
 
 
 # Create your views here.
-def home(request):
+
+def index(request):
     return render(request,'hotel_pms/index.html')
+def home(request):
+    return render(request,'hotel_pms/home.html')
 
 def about(request):
     return render(request,'hotel_pms/about.html')

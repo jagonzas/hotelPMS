@@ -7,6 +7,12 @@ body {
 
 }
 
+
+.specialHeader{
+
+    font-size: 40;
+}
+
 .container {
     flex: 1 0 auto;
 }

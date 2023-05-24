@@ -22,8 +22,9 @@ from django.contrib.auth import views as auth_views
 from hotel_pms.views import register, login_view
 
 urlpatterns = [
+    path('', views.index, name='index'),
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
+    path('home/', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('register/', views.register, name='register'),
     path('login/', login_view, name='login'),
