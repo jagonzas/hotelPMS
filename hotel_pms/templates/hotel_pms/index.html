@@ -4,16 +4,17 @@
     <title>My Hotel</title>
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
-<body>
-    <header>
-        <h1 class="specialHeader" >Hotel Property Management System</h1>
+<body style="font-family: 'Open Sans', sans-serif;">
+    <header class="mb-4">
+        <h1 class="specialHeader text-center py-3" style="background: #007BFF; color: white;" >Hotel Ostaria</h1>
     </header>
     
    <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Hotel Management System</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <a class="navbar-brand" href="#">Main Menu</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -39,27 +40,18 @@
                 </li>
                 {% endif %}
                 {% if user.is_authenticated %}
-                <p>Logged In</p>
-                {% else %}
-                <p>Not Logged In</p>{% endif %}
-                 {% if user.is_authenticated%}
-                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'manage' %}">Manage Rooms</a>
-                 </li>
-                {% endif %} 
-
-
-                {% comment %} <li class="nav-item">
-                    <a class="nav-link" href="{% url 'settings' %}">Settings</a>
-                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'book_room' %}">Book a Room</a>
-                </li> {% endcomment %}
+                    <a class="nav-link" href="{% url 'manage' %}">Manage Rooms</a>
+                </li>
+                {% endif %} 
             </ul>
+            {% if user.is_authenticated %}
+            <p class="navbar-text ml-auto">Logged In</p>
+            {% else %}
+            <p class="navbar-text ml-auto">Not Logged In</p>{% endif %}
         </div>
     </nav>
 </div>
-
 
     <main>
         <!-- This block will be filled by each child template -->
@@ -68,8 +60,8 @@
     </main>
 
  <footer class="footer mt-auto py-3 bg-light">
-    <div class="container">
-        <span class="text-muted">© 2023 Hotel Management System</span>
+    <div class="container" style="text-align:center">
+        <span class="text-muted">© 2023 Hotel PMS Ostaria</span>
     </div>
 </footer>
 
