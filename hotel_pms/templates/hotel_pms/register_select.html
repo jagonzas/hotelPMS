@@ -1,0 +1,27 @@
+{% extends "hotel_pms/index.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Choose account type:</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Guest</h5>
+                    <p class="card-text">Create a new guest account.</p>
+                    <a href="{% url 'register_guest' %}" class="btn btn-primary">Register as Guest</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Staff</h5>
+                    <p class="card-text">Create a new staff account.</p>
+                    <a href="{% url 'register_staff' %}" class="btn btn-primary">Register as Staff</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
