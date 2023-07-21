@@ -32,6 +32,7 @@ urlpatterns = [
     path('approve_registration', views.approve_registration, name='approve_registration'),
     path('manage/',views.managerooms, name='manage'),
     path('add_room/', views.add_room, name='add_room'),
+    path('manage/edit/<int:room_id>/', views.edit_room, name='edit_room'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('register/select/', views.register_select, name='register_select'),
     path('register/guest/', views.register_guest, name='register_guest'),

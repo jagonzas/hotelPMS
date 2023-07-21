@@ -1,0 +1,39 @@
+{% extends "hotel_pms/index.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h2>Manage Rooms</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th> <!-- For room id -->
+                <th scope="col">Image</th>
+                <th scope="col">Type</th>
+                <th scope="col">Status</th>
+                <th scope="col">Rate</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for room in rooms %}
+            <tr>
+                <th scope="row">{{ room.id }}</th> <!-- Display room id -->
+                <td>
+                    {% if room.image %} <!-- If an image exists, display it -->
+                        <img src="{{ room.image.url }}" width="100px" alt="Room image">
+                    {% else %} <!-- Otherwise, display a default image -->
+                        <img src="{% static 'default_room_image.jpeg' %}" width="100px" alt="Default room image">
+                    {% endif %}
+                </td>
+                <td>{{ room.get_room_type_display }}</td>
+                <td>{{ room.get_status_display }}</td>
+                <td>{{ room.rate }}</td>
+                <td>
+                    <a href="{% url 'edit_room' room.id %}" class="btn btn-primary">Edit</a> <!-- Use room id in the URL -->
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

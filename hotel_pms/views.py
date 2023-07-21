@@ -121,10 +121,34 @@ def login_view(request):
             return render(request, 'hotel_pms/login.html') # added this line
     else:
         return render(request, 'hotel_pms/login.html')
+    
 
+#ROOMS
 def managerooms(request):
-    return render(request,'hotel_pms/login.html')
+    # Check if the user is authenticated and is a staff member
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('home')
+    
+    # Retrieve all rooms
+    rooms = Room.objects.all()
+    return render(request, 'hotel_pms/manage_rooms.html', {'rooms': rooms})
 
+
+def edit_room(request, room_id):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('home')
+
+    room = get_object_or_404(Room, id=room_id)
+    
+    if request.method == 'POST':
+        form = RoomForm(request.POST, request.FILES, instance=room)  # Note the addition of request.FILES to handle file uploads
+        if form.is_valid():
+            form.save()
+            return redirect('manage')
+    else:
+        form = RoomForm(instance=room)
+    
+    return render(request, 'hotel_pms/edit_room.html', {'form': form})
 
 
 
