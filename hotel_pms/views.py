@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from .forms import StaffRegisterForm,GuestRegisterForm
+from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Room, Booking, Payment, Customer, Staff, Blacklist, StaffRegistrationRequest
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -18,7 +18,13 @@ def index(request):
     return render(request,'hotel_pms/index.html')
 
 def home(request):
-    return render(request,'hotel_pms/home.html')
+    rooms = Room.objects.all()
+    print(request.user)  # Print the user
+    print(request.user.groups.all())  # Print the user's groups
+
+    is_guest = request.user.groups.filter(name='Customers').exists()
+    print(is_guest)
+    return render(request, 'hotel_pms/home.html', {'rooms': rooms, 'is_guest': is_guest})
 
 def about(request):
     return render(request,'hotel_pms/about.html')
@@ -29,21 +35,28 @@ def about(request):
 
 def register_select(request):
     return render(request,'hotel_pms/register_select.html')
-
+    
 
 def register_guest(request):
     if request.method == 'POST':
-        form = GuestRegisterForm(request.POST, request.FILES)
+        form = CustomerRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
-            Customer.objects.create(user=user, id_document=request.FILES['id_document'])
+
+            # You've already created a Customer instance in your form's save method.
+            # Customer.objects.create(user=user, id_document=request.FILES['id_document'])
+
+            # Retrieve the group by name and add the user to it
+            group = Group.objects.get(name='Customers')
+            group.user_set.add(user)
+
             login(request, user)
             messages.success(request, f'Account created for {user.username}! You are now logged in.')
             return redirect('home')
         else:
             messages.error(request, 'There was an error in your registration. Please check your information.')
     else:
-        form = GuestRegisterForm()
+        form = CustomerRegisterForm()
 
     return render(request, 'hotel_pms/register_guest.html', {'form': form})
 
@@ -65,7 +78,7 @@ def register_staff(request):
 
 
 
-#Request for admin to create staff acc
+#Request for admin to create staff acc (STAFF ACTION)
 
 def approve_registration(request):
     if request.method == 'POST':
@@ -94,7 +107,6 @@ def approve_registration(request):
 
 
 
-
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -106,8 +118,32 @@ def login_view(request):
             return redirect('home')
         else:
             messages.error(request,"Invalid username or password.")
+            return render(request, 'hotel_pms/login.html') # added this line
     else:
         return render(request, 'hotel_pms/login.html')
 
 def managerooms(request):
     return render(request,'hotel_pms/login.html')
+
+
+
+
+#Add room functionality only for admin 
+
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def add_room(request):
+    print(request.user.is_authenticated)
+    if request.method == 'POST':
+        form = RoomForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Room added successfully.')
+            return redirect('home')
+    else:
+        form = RoomForm()
+    return render(request, 'hotel_pms/add_room.html', {'form': form})
+
+
+
+
+

@@ -11,6 +11,24 @@
     <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
 </div>
 
+{% if is_guest %}
+<div class="container mt-4">
+    <div class="row">
+        {% for room in rooms %}
+        <div class="col-sm-4">
+            <div class="card mb-4">
+                <img src="{{ room.image.url }}" class="card-img-top" alt="Room image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ room.name }}</h5>
+                    <p class="card-text">{{ room.description }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <!-- Carousel for Sliding Images -->
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">

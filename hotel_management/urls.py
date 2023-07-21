@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
 from hotel_pms import views
 from django.urls import include
+from django.conf import settings
 from django.contrib.auth import views as auth_views
 from hotel_pms.views import register_guest,register_select,register_staff, login_view
 
@@ -29,8 +31,9 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('approve_registration', views.approve_registration, name='approve_registration'),
     path('manage/',views.managerooms, name='manage'),
+    path('add_room/', views.add_room, name='add_room'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('register/select/', views.register_select, name='register_select'),
     path('register/guest/', views.register_guest, name='register_guest'),
     path('register/staff/', views.register_staff, name='register_staff')
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

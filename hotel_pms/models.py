@@ -26,7 +26,7 @@ class Room(models.Model):
         ('b', 'Booked'),
         ('o', 'Out-of-service'),
     )
-   
+    image = models.ImageField(upload_to='rooms/', null=True, blank=True)
     room_type = models.CharField(max_length=2, choices=ROOM_TYPES)
     status = models.CharField(max_length=1, choices=STATUS,default='a')
     rate = models.DecimalField(max_digits=7, decimal_places=2,default=100.00)
