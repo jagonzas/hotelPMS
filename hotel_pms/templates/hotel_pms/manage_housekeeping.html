@@ -18,7 +18,7 @@
                         <h5 class="card-title">{{ room.name }}</h5>
                         <div>
                             <label for="status_{{ room.id }}">Status:</label>
-                            <select name="status_{{ room.id }}" id="status_{{ room.id }}" class="room-status-select" data-roomname="{{ room.name }}">
+                            <select class="room-status-select" data-roomname="{{ room.name }}" name="room_status_{{ room.id }}">
                                 <option value="available" {% if room.status == 'available' %}selected{% endif %}>Available</option>
                                 <option value="need_cleaning" {% if room.status == 'need_cleaning' %}selected{% endif %}>Need Cleaning</option>
                                 <option value="need_maintenance" {% if room.status == 'need_maintenance' %}selected{% endif %}>Need Maintenance</option>
@@ -34,27 +34,27 @@
 </div>
 
 <script>
-   document.addEventListener('DOMContentLoaded', function() {
-    const selects = document.querySelectorAll('.room-status-select');
+    document.addEventListener('DOMContentLoaded', function() {
+        const selects = document.querySelectorAll('.room-status-select');
 
-    selects.forEach(select => {
-        select.addEventListener('change', function(e) {
-            const roomName = e.target.dataset.roomname;
-            const newStatus = e.target.options[e.target.selectedIndex].text;
-            const isConfirmed = confirm(`Are you sure you want to switch the status of ${roomName} to: ${newStatus}?`);
+        selects.forEach(select => {
+            select.addEventListener('change', function(e) {
+                const roomName = e.target.dataset.roomname; // This will get the room name
+                const newStatus = e.target.options[e.target.selectedIndex].text;
+                const isConfirmed = confirm(`Are you sure you want to switch the status of room ${roomName} to: ${newStatus}?`);
 
-            if (!isConfirmed) {
-                // Reset the select to its original value
-                for (let i = 0; i < e.target.options.length; i++) {
-                    if (e.target.options[i].defaultSelected) {
-                        e.target.selectedIndex = i;
-                        break;
+                if (!isConfirmed) {
+                    // Reset the select to its original value
+                    for (let i = 0; i < e.target.options.length; i++) {
+                        if (e.target.options[i].defaultSelected) {
+                            e.target.selectedIndex = i;
+                            break;
+                        }
                     }
                 }
-            }
+            });
         });
     });
-});
-
 </script>
+
 {% endblock %}

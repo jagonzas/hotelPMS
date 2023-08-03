@@ -26,6 +26,7 @@ class Room(models.Model):
         ('cleaning', 'Needs Cleaning'),
         ('maintenance', 'Needs Maintenance'),
     ]
+    name = models.CharField(max_length=255,  default='basic')  # New field for room name
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='available')
     image = models.ImageField(upload_to='rooms/', null=True, blank=True)
     room_type = models.CharField(max_length=2, choices=ROOM_TYPES)

@@ -35,7 +35,7 @@ class StaffRegisterForm(UserCreationForm):
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['room_type','rate', 'image']
+        fields = ['name','room_type','rate', 'image']
         widgets = {
             'room_type': forms.Select(choices=Room.ROOM_TYPES),
 
