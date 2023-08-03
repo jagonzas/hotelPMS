@@ -12,6 +12,8 @@
 </style>
 
     {% load static %}
+    
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'styles.css' %}">
@@ -39,11 +41,22 @@
                 {% endif %}
                 {% if user.is_authenticated and user.is_staff %}
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_room' %}">Add Room</a>
+                </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage_housekeeping' %}">Manage Housekeeping</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'manage' %}">Manage Rooms</a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'approve_registration' %}">Approve Staff Registration</a>
                 </li>
                 {% endif %}
 
-
+                {% if user.is_authenticated and is_customer %}
+                    <a class="nav-link" href="{% url 'view_rooms' %}">View Rooms</a>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
@@ -52,19 +65,10 @@
                     <a class="nav-link" href="{% url 'register_select' %}">Register</a>
                 </li>
                 {% endif %}
-
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                     </li>
-                    {% if user.is_staff %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'add_room' %}">Add Room</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'manage' %}">Manage Rooms</a>
-                        </li>
-                    {% endif %}
                 {% endif %}
             </ul>
             {% if user.is_authenticated %}

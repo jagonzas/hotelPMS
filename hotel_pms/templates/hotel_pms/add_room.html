@@ -5,6 +5,15 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+        
+        <h3>Images:</h3>
+        {{ formset.management_form }}
+        {% for inline_form in formset %}
+            <div class="room-image-form">
+                {{ inline_form.as_p }}
+            </div>
+        {% endfor %}
+
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>

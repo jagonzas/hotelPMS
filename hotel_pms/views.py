@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm
+from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
@@ -103,6 +103,9 @@ def approve_registration(request):
 
 
 
+def room_detail(request, pk):
+    room = get_object_or_404(Room, pk=pk)
+    return render(request, 'hotel_pms/room_detail.html', {'room': room})
 
 
 
@@ -124,6 +127,42 @@ def login_view(request):
     
 
 #ROOMS
+
+@login_required
+
+def book_room(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+
+    if room.is_available(start_date, end_date):
+        # Set the user who booked the room
+        room.booked_by = request.user
+        room.save()
+
+        # Additional logic to create the booking
+        return redirect('booking_successful')
+    else:
+        form = BookingForm()
+    return render(request, 'hotel_pms/book_room.html', {'form': form, 'room': room})
+        # Return an error or redirect to a page
+
+
+# def book_room(request, room_id):
+#     room = get_object_or_404(Room, id=room_id)
+#     if request.method == 'POST':
+#         form = BookingForm(request.POST)
+#         if form.is_valid():
+#             booking = form.save(commit=False)
+#             booking.customer = request.user
+#             booking.room = room
+#             booking.save()
+#             # You might want to add some sort of success message here
+#             return redirect('room_detail', room_id=room.id)
+#     else:
+#         form = BookingForm()
+#     return render(request, 'hotel_pms/book_room.html', {'form': form, 'room': room})
+
 def managerooms(request):
     # Check if the user is authenticated and is a staff member
     if not request.user.is_authenticated or not request.user.is_staff:
@@ -151,16 +190,24 @@ def edit_room(request, room_id):
     return render(request, 'hotel_pms/edit_room.html', {'form': form})
 
 
+def view_rooms(request):
+    rooms = Room.objects.prefetch_related('images').all()
+    is_customer = request.user.groups.filter(name='Customers').exists()
+    return render(request, 'hotel_pms/view_rooms.html', {'rooms': rooms})
+
+
 
 #Add room functionality only for admin 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
 def add_room(request):
-    print(request.user.is_authenticated)
     if request.method == 'POST':
         form = RoomForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            room = form.save()
+            images = request.FILES.getlist('images')
+            for img in images:
+                RoomImage.objects.create(room=room, image=img)
             messages.success(request, 'Room added successfully.')
             return redirect('home')
     else:
@@ -168,6 +215,18 @@ def add_room(request):
     return render(request, 'hotel_pms/add_room.html', {'form': form})
 
 
-
-
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def manage_housekeeping(request):
+    rooms = Room.objects.all()
+    if request.method == 'POST':
+        form = HousekeepingForm(request.POST)
+        if form.is_valid():
+            room = form.cleaned_data['room']
+            status = form.cleaned_data['status']
+            room.status = status
+            room.save()
+            messages.success(request, 'Room status updated successfully.')
+    else:
+        form = HousekeepingForm()
+    return render(request, 'hotel_pms/manage_housekeeping.html', {'rooms': rooms, 'form': form})
 

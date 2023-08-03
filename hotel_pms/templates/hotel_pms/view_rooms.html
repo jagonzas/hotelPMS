@@ -1,0 +1,12 @@
+<!-- hotel_pms/templates/hotel_pms/view_rooms.html -->
+{% extends "hotel_pms/base.html" %}
+
+{% block content %}
+<h2>All Rooms</h2>
+{% for room in rooms %}
+    <div>
+        <h3>{{ room.name }}</h3>
+        <!-- Add more room details here -->
+    </div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'hotel_pms/index.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h2>Manage Housekeeping</h2>
+    <form method="POST" id="manage-housekeeping-form" action="{% url 'manage_housekeeping' %}">
+        {% csrf_token %}
+        <div class="row">
+            {% for room in rooms %}
+            <div class="col-sm-4">
+                <div class="card mb-4">
+                    {% if room.image %}
+                        <img src="{{ room.image.url }}" class="card-img-top" alt="Room image">
+                    {% else %}
+                        <img src="{% static 'default_room_image.jpeg' %}" class="card-img-top" alt="Room image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ room.name }}</h5>
+                        <div>
+                            <label for="status_{{ room.id }}">Status:</label>
+                            <select name="status_{{ room.id }}" id="status_{{ room.id }}" class="room-status-select" data-roomname="{{ room.name }}">
+                                <option value="available" {% if room.status == 'available' %}selected{% endif %}>Available</option>
+                                <option value="need_cleaning" {% if room.status == 'need_cleaning' %}selected{% endif %}>Need Cleaning</option>
+                                <option value="need_maintenance" {% if room.status == 'need_maintenance' %}selected{% endif %}>Need Maintenance</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Update Statuses</button>
+    </form>
+</div>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const selects = document.querySelectorAll('.room-status-select');
+
+    selects.forEach(select => {
+        select.addEventListener('change', function(e) {
+            const roomName = e.target.dataset.roomname;
+            const newStatus = e.target.options[e.target.selectedIndex].text;
+            const isConfirmed = confirm(`Are you sure you want to switch the status of ${roomName} to: ${newStatus}?`);
+
+            if (!isConfirmed) {
+                // Reset the select to its original value
+                for (let i = 0; i < e.target.options.length; i++) {
+                    if (e.target.options[i].defaultSelected) {
+                        e.target.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        });
+    });
+});
+
+</script>
+{% endblock %}

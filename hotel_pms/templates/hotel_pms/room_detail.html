@@ -1,0 +1,14 @@
+{% extends 'hotel_pms/index.html' %}
+{% block content %}
+    <h1>{{ room.room_type }}</h1>
+    <p>Rate: {{ room.rate }}</p>
+    <p>{{ room.description }}</p>
+    {% comment %} <form action="{% url 'book_room' room.id %}" method="post"> {% endcomment %}
+        {% csrf_token %}
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" required>
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" required>
+        <button type="submit">Book</button>
+    </form>
+{% endblock %}

@@ -21,27 +21,28 @@ class Room(models.Model):
         ('d', 'Double'),
         ('su', 'Suite'),
     )
-    STATUS = (
-        ('a', 'Available'),
-        ('b', 'Booked'),
-        ('o', 'Out-of-service'),
-    )
+    STATUS_CHOICES = [
+        ('available', 'Available'),
+        ('cleaning', 'Needs Cleaning'),
+        ('maintenance', 'Needs Maintenance'),
+    ]
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='available')
     image = models.ImageField(upload_to='rooms/', null=True, blank=True)
     room_type = models.CharField(max_length=2, choices=ROOM_TYPES)
-    status = models.CharField(max_length=1, choices=STATUS,default='a')
     rate = models.DecimalField(max_digits=7, decimal_places=2,default=100.00)
 
 class Booking(models.Model):
-    status = (
-       ( 'a', 'Active'),
-       ('b','Booked'),
-       ('o','Out-of-Service')
+    APPROVAL_CHOICES = (
+        ('p', 'Pending'),
+        ('a', 'Approved'),
+        ('r', 'Rejected'),
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    booking_date = models.DateTimeField(default=timezone.now)
     start_date = models.DateField()
     end_date = models.DateField()
+    approval = models.CharField(max_length=1, choices=APPROVAL_CHOICES, default='p')
+
 
 class Payment(models.Model):
     STATUS = (
@@ -110,3 +111,5 @@ class StaffRegistrationRequest(models.Model):
     password = models.CharField(max_length=128)
     staff_id = models.CharField(max_length=20)
     is_approved = models.BooleanField(default=False)
+
+
