@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Room, Customer, Booking
@@ -35,13 +36,13 @@ class StaffRegisterForm(UserCreationForm):
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['name','room_type','rate', 'image']
+        fields = ['name','room_type','rate']
         widgets = {
             'room_type': forms.Select(choices=Room.ROOM_TYPES),
-
             'rate': forms.NumberInput(attrs={'step': "0.01", 'min': "0"}),
             'image': forms.FileInput()
         }
+
 
 class BookingForm(forms.ModelForm):
     class Meta:
@@ -51,6 +52,15 @@ class BookingForm(forms.ModelForm):
             'start_date': forms.SelectDateWidget(),
             'end_date': forms.SelectDateWidget(),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
+
+        if start_date and end_date:
+            if start_date > end_date:
+                raise ValidationError("End date should be after the start date.")
 
 class HousekeepingForm(forms.ModelForm):
     room = forms.ModelChoiceField(queryset=Room.objects.all())

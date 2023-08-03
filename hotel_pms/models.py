@@ -7,9 +7,7 @@ class Customer(models.Model):
     id_document = models.FileField(upload_to='id_documents/')
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
-    @property
-    def is_blacklisted(self):
-        return Blacklist.objects.filter(user=self.user).exists()
+   
 
 class Staff(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -28,9 +26,13 @@ class Room(models.Model):
     ]
     name = models.CharField(max_length=255,  default='basic')  # New field for room name
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='available')
-    image = models.ImageField(upload_to='rooms/', null=True, blank=True)
     room_type = models.CharField(max_length=2, choices=ROOM_TYPES)
     rate = models.DecimalField(max_digits=7, decimal_places=2,default=100.00)
+
+class RoomImage(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='rooms/')
+
 
 class Booking(models.Model):
     APPROVAL_CHOICES = (
@@ -68,30 +70,7 @@ class Notification(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=1, choices=STATUS)
 
-class Feedback(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
 
-class Report(models.Model):
-    REPORT_TYPES = (
-        ('o', 'Occupancy'),
-        ('r', 'Revenue'),
-        ('p', 'Performance'),
-        # Add more report types as needed
-    )
-    generated_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    report_type = models.CharField(max_length=1, choices=REPORT_TYPES)
-    generated_at = models.DateTimeField(default=timezone.now)
-    start_date = models.DateField()
-    end_date = models.DateField()
-
-
-
-class Blacklist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    reason = models.TextField()
-    added_at = models.DateTimeField(default=timezone.now)
 
 class Maintenance(models.Model):
     MAINTENANCE_STATUS = (

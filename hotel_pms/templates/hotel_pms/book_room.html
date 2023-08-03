@@ -2,10 +2,13 @@
 {% extends "hotel_pms/base.html" %}
 
 {% block content %}
-<h2>Book a room</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Book</button>
+{% if room %}
+    <h3>Booking Room: {{ room.name }}</h3>
+{% endif %}
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Book</button>
 </form>
+
 {% endblock %}

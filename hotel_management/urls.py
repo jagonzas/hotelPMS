@@ -32,7 +32,6 @@ urlpatterns = [
     path('approve_registration', views.approve_registration, name='approve_registration'),
     path('manage/',views.managerooms, name='manage'),
     path('add_room/', views.add_room, name='add_room'),
-    path('view_rooms/', views.view_rooms, name='view_rooms'),
     path('manage_housekeeping/', views.manage_housekeeping, name='manage_housekeeping'),
     path('room/<int:pk>/', views.room_detail, name='room_detail'),
     path('manage/edit/<int:room_id>/', views.edit_room, name='edit_room'),
@@ -41,3 +40,6 @@ urlpatterns = [
     path('register/guest/', views.register_guest, name='register_guest'),
     path('register/staff/', views.register_staff, name='register_staff')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

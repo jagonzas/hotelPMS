@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Room, Booking, Payment, Customer, Staff, Blacklist, StaffRegistrationRequest
+from .models import Room, Booking, Payment, Customer, Staff, StaffRegistrationRequest, RoomImage
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
@@ -191,7 +191,7 @@ def edit_room(request, room_id):
 
 
 def view_rooms(request):
-    rooms = Room.objects.prefetch_related('images').all()
+    rooms = Room.objects.all().prefetch_related('roomimage_set')
     is_customer = request.user.groups.filter(name='Customers').exists()
     return render(request, 'hotel_pms/view_rooms.html', {'rooms': rooms})
 
