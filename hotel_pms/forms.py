@@ -45,13 +45,18 @@ class RoomForm(forms.ModelForm):
 
 
 class BookingForm(forms.ModelForm):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=True
+    )
+    end_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=True
+    )
+
     class Meta:
         model = Booking
         fields = ['start_date', 'end_date']
-        widgets = {
-            'start_date': forms.SelectDateWidget(),
-            'end_date': forms.SelectDateWidget(),
-        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -61,6 +66,7 @@ class BookingForm(forms.ModelForm):
         if start_date and end_date:
             if start_date > end_date:
                 raise ValidationError("End date should be after the start date.")
+
 
 class HousekeepingForm(forms.ModelForm):
     room = forms.ModelChoiceField(queryset=Room.objects.all())

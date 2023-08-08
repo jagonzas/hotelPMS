@@ -32,6 +32,7 @@ urlpatterns = [
     path('approve_registration', views.approve_registration, name='approve_registration'),
     path('manage/',views.managerooms, name='manage'),
     path('add_room/', views.add_room, name='add_room'),
+    path('room/<int:room_id>/book/', views.book_room, name='book_room'),
     path('manage_housekeeping/', views.manage_housekeeping, name='manage_housekeeping'),
     path('room/<int:pk>/', views.room_detail, name='room_detail'),
     path('delete-room/<int:pk>/', views.delete_room, name='delete_room'),

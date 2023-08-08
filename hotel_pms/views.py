@@ -129,23 +129,30 @@ def login_view(request):
 #ROOMS
 
 @login_required
-
 def book_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-    start_date = request.POST['start_date']
-    end_date = request.POST['end_date']
+    if request.method == "POST":
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
 
-    if room.is_available(start_date, end_date):
-        # Set the user who booked the room
-        room.booked_by = request.user
-        room.save()
+            if room.is_available(start_date, end_date):
+                # Create a new booking instance
+                booking = form.save(commit=False) # don't save to DB yet
+                booking.customer = request.user
+                booking.room = room
+                booking.save()
+                return redirect('booking_successful')
+            else:
+                messages.error(request, 'Room is not available for the selected dates.')
+        else:
+            messages.error(request, 'There was an error with your booking. Please check the dates and try again.')
 
-        # Additional logic to create the booking
-        return redirect('booking_successful')
     else:
-        form = BookingForm()
+        form = BookingForm()  # This will create an empty form
+
     return render(request, 'hotel_pms/book_room.html', {'form': form, 'room': room})
-        # Return an error or redirect to a page
 
 
 def managerooms(request):

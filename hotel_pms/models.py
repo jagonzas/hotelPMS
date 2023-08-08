@@ -35,16 +35,11 @@ class RoomImage(models.Model):
 
 
 class Booking(models.Model):
-    APPROVAL_CHOICES = (
-        ('p', 'Pending'),
-        ('a', 'Approved'),
-        ('r', 'Rejected'),
-    )
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    approval = models.CharField(max_length=1, choices=APPROVAL_CHOICES, default='p')
+   
 
 
 class Payment(models.Model):
