@@ -34,6 +34,7 @@ urlpatterns = [
     path('add_room/', views.add_room, name='add_room'),
     path('manage_housekeeping/', views.manage_housekeeping, name='manage_housekeeping'),
     path('room/<int:pk>/', views.room_detail, name='room_detail'),
+    path('delete-room/<int:pk>/', views.delete_room, name='delete_room'),
     path('manage/edit/<int:room_id>/', views.edit_room, name='edit_room'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('register/select/', views.register_select, name='register_select'),

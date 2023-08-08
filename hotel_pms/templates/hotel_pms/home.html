@@ -18,20 +18,35 @@
             <div class="card mb-4">
                 <a href="{% url 'room_detail' room.pk %}">
                     <div id="carousel{{ room.id }}" class="carousel slide" data-ride="carousel">
+
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            {% for room_image in room.images.all %}
+                                <li data-target="#carousel{{ room.id }}" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+                            {% endfor %}
+                        </ol>
+
+                        <!-- Slides -->
                         <div class="carousel-inner">
-                            {% for room_image in room.roomimage_set.all %}
-                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <img src="{{ room_image.image.url }}" class="card-img-top" alt="Room image">
-                            </div>
+                            {% for room_image in room.images.all %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <img src="{{ room_image.image.url }}" class="card-img-top" alt="Room image">
+                                </div>
                             {% endfor %}
                         </div>
+
+                        <!-- Left and right controls -->
+                        <a class="carousel-control-prev" href="#carousel{{ room.id }}" data-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel{{ room.id }}" data-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </a>
                     </div>
                 </a>
                 <div class="card-body">
-                    <a href="{% url 'room_detail' room.pk %}">
-                        <h5 class="card-title">{{ room.name }}</h5>
-                        <p class="card-text">{{ room.description }}</p>
-                    </a>
+                    <h5 class="card-title">{{ room.name }}</h5>  <!-- Displaying room name -->
+                    <p class="card-text">{{ room.description }}</p>
                 </div>
             </div>
         </div>

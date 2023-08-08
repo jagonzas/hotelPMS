@@ -148,21 +148,6 @@ def book_room(request, room_id):
         # Return an error or redirect to a page
 
 
-# def book_room(request, room_id):
-#     room = get_object_or_404(Room, id=room_id)
-#     if request.method == 'POST':
-#         form = BookingForm(request.POST)
-#         if form.is_valid():
-#             booking = form.save(commit=False)
-#             booking.customer = request.user
-#             booking.room = room
-#             booking.save()
-#             # You might want to add some sort of success message here
-#             return redirect('room_detail', room_id=room.id)
-#     else:
-#         form = BookingForm()
-#     return render(request, 'hotel_pms/book_room.html', {'form': form, 'room': room})
-
 def managerooms(request):
     # Check if the user is authenticated and is a staff member
     if not request.user.is_authenticated or not request.user.is_staff:
@@ -171,6 +156,15 @@ def managerooms(request):
     # Retrieve all rooms
     rooms = Room.objects.all()
     return render(request, 'hotel_pms/manage_rooms.html', {'rooms': rooms})
+
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def delete_room(request, pk):
+    room = get_object_or_404(Room, pk=pk)
+    if request.method == "POST":
+        room.delete()
+        messages.success(request, "Room deleted successfully!")
+        return redirect('manage')
+    return render(request, 'hotel_pms/confirm_delete.html', {'room': room})
 
 
 def edit_room(request, room_id):
