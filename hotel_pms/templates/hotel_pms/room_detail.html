@@ -1,9 +1,42 @@
 {% extends 'hotel_pms/index.html' %}
-{% block content %}
-    <h1>{{ room.room_type }}</h1>
-    <p>Rate: {{ room.rate }}</p>
-    <p>{{ room.description }}</p>
 
-    <!-- Button that redirects to the booking page for this specific room -->
-    <a href="{% url 'book_room' room.id %}" class="btn btn-primary float-right">Book</a>
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Carousel for Room Images -->
+        <div class="col-lg-6">
+            <div id="roomImagesCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% for room_image in room.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ room_image.image.url }}" class="d-block w-100" alt="Room image {{ forloop.counter }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#roomImagesCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#roomImagesCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Room Details -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">{{ room.room_type }}</h1>
+                    <p class="card-text"><strong>Rate:</strong> {{ room.rate }}</p>
+                    <p class="card-text">{{ room.description }}</p>
+
+                    <!-- Book Button -->
+                    <a href="{% url 'book_room' room.id %}" class="btn btn-primary float-right">Book</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
