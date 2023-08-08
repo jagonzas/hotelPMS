@@ -143,7 +143,7 @@ def book_room(request, room_id):
                 booking.customer = request.user
                 booking.room = room
                 booking.save()
-                return redirect('booking_successful')
+                return redirect('home')
             else:
                 messages.error(request, 'Room is not available for the selected dates.')
         else:
@@ -151,6 +151,8 @@ def book_room(request, room_id):
 
     else:
         form = BookingForm()  # This will create an empty form
+
+    
 
     return render(request, 'hotel_pms/book_room.html', {'form': form, 'room': room})
 

@@ -28,6 +28,12 @@ class Room(models.Model):
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='available')
     room_type = models.CharField(max_length=2, choices=ROOM_TYPES)
     rate = models.DecimalField(max_digits=7, decimal_places=2,default=100.00)
+    def is_available(self, start_date, end_date):
+        bookings_for_room = Booking.objects.filter(room=self)
+        for booking in bookings_for_room:
+            if (start_date <= booking.end_date) and (end_date >= booking.start_date):
+                return False  # Room is not available for these dates
+        return True  # Room is available
 
 class RoomImage(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='images')
