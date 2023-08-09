@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm
+from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm, BookingChargeFormSet, BookingCharge
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django import forms
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Room, Booking, Payment, Customer, Staff, StaffRegistrationRequest, RoomImage
+from .models import Room, Booking, Payment, Customer, Staff, StaffRegistrationRequest, RoomImage, BookingCharge
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
@@ -132,21 +133,31 @@ def login_view(request):
 def edit_booking(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id)
 
+    # For the formset without specifying a custom form
+    BookingChargeFormSet = forms.inlineformset_factory(Booking, BookingCharge, fields=('charge', 'quantity'), extra=1)
+
     if request.method == 'POST':
         form = EditBookingForm(request.POST, instance=booking)
-        if form.is_valid():
+        formset = BookingChargeFormSet(request.POST, instance=booking)
+
+        if form.is_valid() and formset.is_valid():
             form.save()
-            return redirect('list_bookings') # Or wherever you want to redirect after a successful edit
+            formset.save()
+            return redirect('list_bookings')
+        else:
+            # If there's an error, you can optionally add a message or handle it as required
+            messages.error(request, 'There was an error updating the booking. Please check the data and try again.')
     else:
         form = EditBookingForm(instance=booking)
+        formset = BookingChargeFormSet(instance=booking)
 
     context = {
         'booking': booking,
-        'form': form
+        'form': form,
+        'formset': formset
     }
 
     return render(request, 'hotel_pms/edit_booking.html', context)
-
 
 @login_required
 def book_room(request, room_id):

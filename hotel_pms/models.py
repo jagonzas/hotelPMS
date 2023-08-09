@@ -40,13 +40,41 @@ class RoomImage(models.Model):
     image = models.ImageField(upload_to='rooms/')
 
 
+   
+class ExtraCharge(models.Model):
+    CHARGE_TYPES = (
+        ('bed', 'Extra Bed'),
+        ('smoking', 'Smoking Fee'),
+        ('coffee','Coffe Price'),
+        ('water','Water Price'),
+        ('maintenance','Maintenance Price'),
+        ('late','Late Fees'),
+        ('early','Early Check Fee'),
+        ('miscellaneous','Extra Fees')        
+    )
+    charge_type = models.CharField(max_length=50, choices=CHARGE_TYPES)
+    cost = models.DecimalField(max_digits=7, decimal_places=2)
+    description = models.TextField(blank=True)
+    def __str__(self):
+        return self.get_charge_type_display()
+    
+
 class Booking(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     accompanies = models.PositiveIntegerField(default=0, help_text="Number of people accompanying the customer.")
-   
+    charges = models.ManyToManyField(ExtraCharge, through='BookingCharge')
+
+
+class BookingCharge(models.Model):
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
+    charge = models.ForeignKey(ExtraCharge, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ['booking', 'charge']  # ensures one charge type per booking
 
 
 class Payment(models.Model):

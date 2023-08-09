@@ -1,12 +1,30 @@
 {% extends "hotel_pms/index.html" %}
 
 {% block content %}
-<h2>Edit Booking with ID :  #{{ booking.id }}</h2>
+<h3>Edit Booking</h3>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+    
+    <!-- Main Booking Form -->
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Save Changes</button>
+
+    <h4>Apply Charges:</h4>
+    <table>
+        {% for charge_form in formset %}
+        <tr class="charge-row">
+            <td>{{ charge_form.charge.label_tag }} {{ charge_form.charge }}</td>
+            <td>{{ charge_form.quantity.label_tag }} {{ charge_form.quantity }}</td>
+            <!-- Add a delete checkbox if required -->
+            {% if charge_form.instance.pk %}
+            <td>{{ charge_form.DELETE.label_tag }} {{ charge_form.DELETE }}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    {{ formset.management_form }}
+
+    <input type="submit" value="Update Booking">
 </form>
 
 {% endblock %}

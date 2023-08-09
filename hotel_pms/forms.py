@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Room, Customer, Booking
+from .models import Room, Customer, Booking, BookingCharge
 
 
 class CustomerRegisterForm(UserCreationForm):
@@ -81,3 +81,13 @@ class EditBookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = ['accompanies']
+        exclude = ['charges']
+        
+
+BookingChargeFormSet = forms.inlineformset_factory(
+    Booking, 
+    BookingCharge, 
+    fields=('charge', 'quantity'), 
+    extra=1, 
+    can_delete=True
+)
