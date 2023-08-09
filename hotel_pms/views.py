@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm
+from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
@@ -128,6 +128,26 @@ def login_view(request):
 
 #ROOMS
 
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def edit_booking(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id)
+
+    if request.method == 'POST':
+        form = EditBookingForm(request.POST, instance=booking)
+        if form.is_valid():
+            form.save()
+            return redirect('list_bookings') # Or wherever you want to redirect after a successful edit
+    else:
+        form = EditBookingForm(instance=booking)
+
+    context = {
+        'booking': booking,
+        'form': form
+    }
+
+    return render(request, 'hotel_pms/edit_booking.html', context)
+
+
 @login_required
 def book_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
@@ -201,6 +221,15 @@ def view_rooms(request):
 
 
 #Add room functionality only for admin 
+
+@login_required
+def list_bookings(request):
+    if not request.user.is_staff: # or `if not request.user.is_superuser:` if you want to restrict this only to superusers.
+        return redirect('home') # or some other page
+
+    # Order by start_date in ascending order
+    bookings = Booking.objects.order_by('start_date')
+    return render(request, 'hotel_pms/list_bookings.html', {'bookings': bookings})
 
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
 def add_room(request):

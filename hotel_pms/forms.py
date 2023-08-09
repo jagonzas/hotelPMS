@@ -75,3 +75,9 @@ class HousekeepingForm(forms.ModelForm):
     class Meta:
         model = Room
         fields = ['room', 'status']
+
+
+class EditBookingForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = ['accompanies']

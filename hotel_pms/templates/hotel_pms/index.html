@@ -47,14 +47,18 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'add_room' %}">Add Room</a>
                 </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'manage_housekeeping' %}">Manage Housekeeping</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage_housekeeping' %}">Housekeeping</a>
                 </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'list_bookings' %}">Bookings</a>
+                </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'manage' %}">Manage Rooms</a>
                 </li>
                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'approve_registration' %}">Approve Staff Registration</a>
+                    <a class="nav-link" href="{% url 'approve_registration' %}">Approve Staff</a>
                 </li>
                 {% endif %}
 
@@ -75,10 +79,6 @@
                     </li>
                 {% endif %}
             </ul>
-            {% if user.is_authenticated %}
-            <p class="navbar-text ml-auto">Logged In</p>
-            {% else %}
-            <p class="navbar-text ml-auto">Not Logged In</p>{% endif %}
         </div>
     </nav>
 </div>
