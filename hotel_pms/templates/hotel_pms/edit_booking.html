@@ -3,6 +3,7 @@
 {% block content %}
 <h3>Edit Booking</h3>
 
+
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     
@@ -16,15 +17,33 @@
             <td>{{ charge_form.charge.label_tag }} {{ charge_form.charge }}</td>
             <td>{{ charge_form.quantity.label_tag }} {{ charge_form.quantity }}</td>
             <!-- Add a delete checkbox if required -->
+            <!-- Add this somewhere above the "Update Booking" button -->
+            
+
             {% if charge_form.instance.pk %}
             <td>{{ charge_form.DELETE.label_tag }} {{ charge_form.DELETE }}</td>
             {% endif %}
         </tr>
         {% endfor %}
+        <div class="form-group">
+                <input type="checkbox" name="delete_entire_booking" id="delete_entire_booking">
+                <label for="delete_entire_booking">Delete Entire Booking</label>
+        </div>
     </table>
     {{ formset.management_form }}
 
     <input type="submit" value="Update Booking">
 </form>
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (document.querySelector('#delete_entire_booking').checked) {
+            const isConfirmed = confirm('Are you sure you want to delete this entire booking?');
+            if (!isConfirmed) {
+                e.preventDefault();
+            }
+        }
+    });
+</script>
+
 
 {% endblock %}

@@ -137,6 +137,10 @@ def edit_booking(request, booking_id):
     BookingChargeFormSet = forms.inlineformset_factory(Booking, BookingCharge, fields=('charge', 'quantity'), extra=1)
 
     if request.method == 'POST':
+        if 'delete_entire_booking' in request.POST:
+            booking.delete()
+            return redirect('list_bookings') # Redirect to bookings list after deletion
+
         form = EditBookingForm(request.POST, instance=booking)
         formset = BookingChargeFormSet(request.POST, instance=booking)
 
