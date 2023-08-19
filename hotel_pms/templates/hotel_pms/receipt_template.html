@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt</title>
+</head>
+<body>
+    <h2>Guest Receipt</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Primary Guest</th>
+                <th>Room</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.customer.username }}</td>
+                <td>{{ booking.room.name }}</td>
+                <td>{{ booking.start_date}}</td>
+                <td>{{ booking.end_date}}</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends "hotel_pms/index.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Blacklist Customers</h2>
+    <div class="list-group">
+    {% for customer in customers %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <span>
+                {{ customer.user.username }}
+            </span>
+            <span>
+                {% if customer.is_blacklisted %}
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_id" value="{{ customer.id }}">
+                        <button type="submit" class="btn btn-success">Remove from blacklist</button>
+                    </form>
+                {% else %}
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_id" value="{{ customer.id }}">
+                        <button type="submit" class="btn btn-danger">Add to blacklist</button>
+                    </form>
+                {% endif %}
+            </span>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

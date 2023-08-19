@@ -34,6 +34,7 @@ urlpatterns = [
     path('edit_booking/<int:booking_id>/', views.edit_booking, name='edit_booking'),
     path('manage/',views.managerooms, name='manage'),
     path('add_room/', views.add_room, name='add_room'),
+    path('blacklist/', views.blacklist_customers, name='blacklist_customers'),
     path('room/<int:room_id>/book/', views.book_room, name='book_room'),
     path('manage_housekeeping/', views.manage_housekeeping, name='manage_housekeeping'),
     path('room/<int:pk>/', views.room_detail, name='room_detail'),
@@ -41,6 +42,7 @@ urlpatterns = [
     path('manage/edit/<int:room_id>/', views.edit_room, name='edit_room'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('register/select/', views.register_select, name='register_select'),
+    path('download_receipt/', views.download_receipt, name='download_receipt'),
     path('register/guest/', views.register_guest, name='register_guest'),
     path('register/staff/', views.register_staff, name='register_staff')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

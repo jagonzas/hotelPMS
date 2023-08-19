@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Room, Booking, Payment, Customer, Staff, StaffRegistrationRequest, RoomImage, BookingCharge
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 
 # Add other necessary imports here, such as your forms
 
@@ -117,14 +119,19 @@ def login_view(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            # Check if user has a customer attribute and if they are blacklisted
+            if hasattr(user, 'customer') and user.customer.is_blacklisted:
+                messages.error(request, "Your account has been blacklisted. Please contact the establishment.")
+                return render(request, 'hotel_pms/login.html')
             login(request, user)
             messages.success(request, f"You are now logged in as {username}.")
             return redirect('home')
         else:
-            messages.error(request,"Invalid username or password.")
-            return render(request, 'hotel_pms/login.html') # added this line
+            messages.error(request, "Invalid username or password.")
+            return render(request, 'hotel_pms/login.html')
     else:
         return render(request, 'hotel_pms/login.html')
+
     
 
 #ROOMS
@@ -276,4 +283,45 @@ def manage_housekeeping(request):
     else:
         form = HousekeepingForm()
     return render(request, 'hotel_pms/manage_housekeeping.html', {'rooms': rooms, 'form': form})
+
+
+
+
+#PDF Receipts
+
+# This needs work
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def download_receipt(request):
+    # Fetch currently reserved bookings
+    bookings = Booking.objects.filter(is_reserved=True)
+    
+    # Render the data to an HTML string
+    html_string = render_to_string('hotel_pms/receipt_template.html', {'bookings': bookings})
+    
+    # Convert the HTML string to a PDF and write it to the response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="receipt.pdf"'
+    pisa_status = pisa.CreatePDF(html_string, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html_string + '</pre>')
+
+    return response
+
+
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def blacklist_customers(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        user = Customer.objects.get(id=user_id)
+        user.is_blacklisted = not user.is_blacklisted  # toggle the status
+        user.save()
+        return redirect('blacklist_customers')
+
+    customers = Customer.objects.all()
+    return render(request, 'hotel_pms/blacklist.html', {'customers': customers})
+
+
 

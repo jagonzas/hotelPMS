@@ -6,6 +6,7 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     id_document = models.FileField(upload_to='id_documents/')
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    is_blacklisted = models.BooleanField(default=False)
 
    
 
