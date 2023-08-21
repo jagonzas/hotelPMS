@@ -1,0 +1,12 @@
+{% extends "hotel_pms/index.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Customer Detail for {{ guest.user.username }}</h2>
+    <p><strong>Full Name:</strong> {{ guest.full_name }}</p>
+    <p><strong>Email:</strong> {{ guest.user.email }}</p>
+    <p><strong>ID:</strong> {{ guest.id_number }}</p>
+    <img src="{{ guest.image.url }}" alt="{{ guest.user.username }}" class="img-fluid" style="max-width: 300px;">
+    <!-- add more fields as necessary -->
+</div>
+{% endblock %}

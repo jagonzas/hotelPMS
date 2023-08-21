@@ -324,4 +324,13 @@ def blacklist_customers(request):
     return render(request, 'hotel_pms/blacklist.html', {'customers': customers})
 
 
+def view_guests(request):
+    guests = Customer.objects.all()
+    return render(request, 'hotel_pms/view_guests.html', {'guests': guests})
+
+
+def guest_detail(request, guest_id):
+    guest = Customer.objects.get(id=guest_id)
+    return render(request, 'hotel_pms/guest_detail.html', {'guest': guest})
+
 

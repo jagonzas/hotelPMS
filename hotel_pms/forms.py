@@ -6,20 +6,22 @@ from .models import Room, Customer, Booking, BookingCharge
 
 
 class CustomerRegisterForm(UserCreationForm):
-    email = forms.EmailField()
-    id_document = forms.FileField()  # for ID documents
-    profile_picture = forms.ImageField(required=False)  # optional profile picture
+    first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
+    id_document = forms.FileField(help_text='Required. Upload your ID document.')
+    profile_picture = forms.ImageField(required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'id_document', 'profile_picture']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'id_document', 'profile_picture']
 
     def save(self, commit=True):
         user = super().save(commit=False)
         if commit:
             user.save()
 
-        customer_profile = Customer(user=user, id_document=self.cleaned_data['id_document'], profile_picture=self.cleaned_data.get('profile_picture'))
+        customer_profile = Customer(user=user, id_document=self.cleaned_data['id_document'], profile_picture=self.cleaned_data['profile_picture'])
         customer_profile.save()
 
         return user

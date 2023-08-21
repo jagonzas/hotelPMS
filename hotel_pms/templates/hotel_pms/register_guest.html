@@ -1,11 +1,67 @@
 {% extends "hotel_pms/index.html" %}
 
 {% block content %}
-  <h2>Register</h2>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+<style>
+    .field-container {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e6f0ff; 
+    margin-bottom:20px; /* Light blue background. */
+}
+
+.field-container label {
+    display: block;
+    margin-bottom: 5px;
+    color: #004799;  /* Adjust this blue to match your theme. */
+}
+
+.field-container .help {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.8em;
+    color: #888;
+}
+.register-container {
+    
+    padding-bottom: 100px; /* Adds space at the bottom of the container */
+}
+
+.register-button {
+    clear:both;
+    background-color: #004799;  /* Blue background color to match theme */
+    color: #FFF;  /* White text color */
+    padding: 10px 20px;  /* Some padding for a better visual */
+    border: none;  /* Removing the default border */
+    border-radius: 5px;  /* Rounded corners */
+    cursor: pointer;  /* Hand cursor on hover */
+    font-weight: bold;  /* Bold font for emphasis */
+    transition: background-color 0.3s;  /* Smooth transition for hover effect */
+}
+
+.register-button:hover {
+    background-color: #003366;  /* A darker blue for hover effect */
+}
+
+
+</style>
+
+<div class="register-container">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="field-container">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <small class="help">{{ field.help_text }}</small>
+        {% endif %}
+        
+        </div>
+        
+        {% endfor %}
+        <button class="register-button" type="submit">Register</button>
+    </form>
+</div>
 
 {% endblock %}
