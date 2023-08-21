@@ -9,11 +9,13 @@
             {% for room in rooms %}
             <div class="col-sm-4">
                 <div class="card mb-4">
-                    {% if room.image %}
-                        <img src="{{ room.image.url }}" class="card-img-top" alt="Room image">
-                    {% else %}
-                        <img src="{% static 'default_room_image.jpeg' %}" class="card-img-top" alt="Room image">
-                    {% endif %}
+                    <div class="carousel-inner">
+                    {% for room_image in room.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ room_image.image.url }}" class="d-block w-100" alt="Room image {{ forloop.counter }}">
+                    </div>
+                    {% endfor %}
+                    </div> 
                     <div class="card-body">
                         <h5 class="card-title">{{ room.name }}</h5>
                         <div>
