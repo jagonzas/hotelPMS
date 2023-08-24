@@ -6,7 +6,7 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Room, Booking, Payment, Customer, Staff, StaffRegistrationRequest, RoomImage, BookingCharge
+from .models import Room, Booking, Payment, Customer, Staff, StaffRegistrationRequest, AdminNotes ,RoomImage, BookingCharge
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.template.loader import render_to_string
@@ -242,14 +242,31 @@ def view_rooms(request):
 
 #Add room functionality only for admin 
 
+
+
+def save_notes(request):
+    if request.method == "POST":
+        note_text = request.POST.get('notes')
+        if note_text:
+            AdminNotes.objects.create(note=note_text)
+        return redirect('list_bookings')  # Redirect back to the booking list after saving.
+
 @login_required
 def list_bookings(request):
     if not request.user.is_staff: # or `if not request.user.is_superuser:` if you want to restrict this only to superusers.
         return redirect('home') # or some other page
 
+
+    admin_notes = AdminNotes.objects.all().order_by('-timestamp')
+
+   
     # Order by start_date in ascending order
     bookings = Booking.objects.order_by('start_date')
-    return render(request, 'hotel_pms/list_bookings.html', {'bookings': bookings})
+    context = {
+        'admin_notes': admin_notes,
+        'bookings': bookings
+    }
+    return render(request, 'hotel_pms/list_bookings.html', context)
 
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
 def add_room(request):

@@ -46,4 +46,25 @@
     </tbody>
 </table>
 
+
+<!-- Notes Section -->
+<div class="notes-section">
+    <h3>Admin Notes:</h3>
+    <form method="POST" action="{% url 'save_notes' %}">
+        {% csrf_token %}
+        <textarea name="notes" rows="5" cols="50" placeholder="Add notes about rooms here..."></textarea>
+        <br>
+        <input type="submit" value="Save Notes" class="btn btn-primary">
+    </form>
+    <div class="saved-notes">
+        <h4>Saved Notes:</h4>
+        {% for note in admin_notes %}
+        <p>{{ note.timestamp|date:"d M Y, H:i" }}: {{ note.note }}</p>
+        {% empty %}
+        <p>No notes saved.</p>
+        {% endfor %}
+    </div>
+</div>
+
+
 {% endblock %}

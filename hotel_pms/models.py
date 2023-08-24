@@ -122,3 +122,11 @@ class StaffRegistrationRequest(models.Model):
     is_approved = models.BooleanField(default=False)
 
 
+
+class AdminNotes(models.Model):
+    note = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.note[:50]  # This returns the first 50 characters of the note for better representation.
+

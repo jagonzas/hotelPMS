@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, RoomImage, Booking, ExtraCharge, BookingCharge
+from .models import Room, RoomImage, Booking,AdminNotes, ExtraCharge, BookingCharge
 
 
 
@@ -11,6 +11,8 @@ class BookingAdmin(admin.ModelAdmin):
     inlines = [BookingChargeInline]
 
 
+class AdminNotesAdmin(admin.ModelAdmin):
+    list_display = ('note', 'created_at') 
     
 class RoomImageInline(admin.TabularInline):
     model = RoomImage
@@ -20,6 +22,7 @@ class RoomAdmin(admin.ModelAdmin):
     inlines = [RoomImageInline]
 
     
+admin.site.register(AdminNotes)
 
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Booking, BookingAdmin)
