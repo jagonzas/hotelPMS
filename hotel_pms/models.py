@@ -74,9 +74,7 @@ class BookingCharge(models.Model):
     charge = models.ForeignKey(ExtraCharge, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
-    class Meta:
-        unique_together = ['booking', 'charge']  # ensures one charge type per booking
-
+    
 
 class Payment(models.Model):
     STATUS = (

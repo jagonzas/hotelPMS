@@ -14,15 +14,12 @@
     <table>
         {% for charge_form in formset %}
         <tr class="charge-row">
+            {{ charge_form.id.as_hidden }} <!-- Add this line -->
             <td>{{ charge_form.charge.label_tag }} {{ charge_form.charge }}</td>
             <td>{{ charge_form.quantity.label_tag }} {{ charge_form.quantity }}</td>
             <!-- Add a delete checkbox if required -->
             <!-- Add this somewhere above the "Update Booking" button -->
-            
-
-            {% if charge_form.instance.pk %}
             <td>{{ charge_form.DELETE.label_tag }} {{ charge_form.DELETE }}</td>
-            {% endif %}
         </tr>
         {% endfor %}
         <div class="form-group">

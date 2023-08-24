@@ -140,9 +140,6 @@ def login_view(request):
 def edit_booking(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id)
 
-    # For the formset without specifying a custom form
-    BookingChargeFormSet = forms.inlineformset_factory(Booking, BookingCharge, fields=('charge', 'quantity'), extra=1)
-
     if request.method == 'POST':
         if 'delete_entire_booking' in request.POST:
             booking.delete()
@@ -156,6 +153,7 @@ def edit_booking(request, booking_id):
             formset.save()
             return redirect('list_bookings')
         else:
+            print ("Formset errors:", formset.errors) #debug line
             # If there's an error, you can optionally add a message or handle it as required
             messages.error(request, 'There was an error updating the booking. Please check the data and try again.')
     else:
