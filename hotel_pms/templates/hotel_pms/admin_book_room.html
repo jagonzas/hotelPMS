@@ -1,0 +1,12 @@
+{% extends "hotel_pms/index.html" %}
+
+{% block content %}
+<h2>Create Booking for {{ room.name }} ({{ room.get_room_type_display }})</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create Booking">
+</form>
+
+{% endblock %}

@@ -268,7 +268,7 @@ def list_bookings(request):
             # Optionally handle if the note doesn't exist; might not be necessary
             pass
 
-        
+
     # Order by start_date in ascending order
     bookings = Booking.objects.order_by('start_date')
     context = {
@@ -332,6 +332,35 @@ def download_receipt(request):
 
     return response
 
+
+
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def admin_rooms_view(request):
+    rooms = Room.objects.all()
+    return render(request, 'hotel_pms/admin_rooms.html', {'rooms': rooms})
+
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def admin_book_room(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+
+    if request.method == "POST":
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            # Create a new booking instance
+            booking = form.save(commit=False) # don't save to DB yet
+            booking.customer = request.user
+            booking.room = room
+            booking.save()
+            return redirect('list_bookings') # or wherever you want to redirect after the admin makes a booking
+        else:
+            messages.error(request, 'There was an error with your booking. Please check the form.')
+
+    else:
+        form = BookingForm()  # This will create an empty form
+
+    return render(request, 'hotel_pms/admin_book_room.html', {'form': form, 'room': room})
 
 
 

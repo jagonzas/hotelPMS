@@ -1,0 +1,14 @@
+{% extends "hotel_pms/index.html" %}
+
+{% block content %}
+<h2>All Rooms</h2>
+
+<ul>
+{% for room in rooms %}
+    <li>{{ room.name }} ({{ room.get_room_type_display }}) - <a href="{% url 'admin_book_room' room.id %}">Create Booking</a></li>
+{% empty %}
+    <li>No rooms listed.</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

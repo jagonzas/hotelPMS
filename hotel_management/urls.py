@@ -25,6 +25,8 @@ from hotel_pms.views import register_guest,register_select,register_staff, login
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('admin/hotel_rooms/', views.admin_rooms_view, name='admin_rooms'),
+    path('admin/rooms/<int:room_id>/booking/', views.admin_book_room, name='admin_book_room'),
     path('admin/', admin.site.urls),
     path('home/', views.home, name='home'),
     path('about/', views.about, name='about'),
