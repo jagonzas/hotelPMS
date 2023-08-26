@@ -259,7 +259,16 @@ def list_bookings(request):
 
     admin_notes = AdminNotes.objects.all().order_by('-timestamp')
 
-   
+    if 'delete_note' in request.POST and request.user.is_superuser:
+        note_id = request.POST['delete_note']
+        try:
+            note = AdminNotes.objects.get(id=note_id)
+            note.delete()
+        except AdminNotes.DoesNotExist:
+            # Optionally handle if the note doesn't exist; might not be necessary
+            pass
+
+        
     # Order by start_date in ascending order
     bookings = Booking.objects.order_by('start_date')
     context = {

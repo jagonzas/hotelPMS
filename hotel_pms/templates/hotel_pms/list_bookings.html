@@ -46,7 +46,6 @@
     </tbody>
 </table>
 
-
 <!-- Notes Section -->
 <div class="notes-section">
     <h3>Admin Notes:</h3>
@@ -56,15 +55,32 @@
         <br>
         <input type="submit" value="Save Notes" class="btn btn-primary">
     </form>
-    <div class="saved-notes">
-        <h4>Saved Notes:</h4>
+
+    <h4>Saved Notes:</h4>
+    <ul>
         {% for note in admin_notes %}
-        <p>{{ note.timestamp|date:"d M Y, H:i" }}: {{ note.note }}</p>
+            <li>
+                {{ note.timestamp|date:"d M Y, H:i" }}: {{ note.note }}
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="delete_note" value="{{ note.id }}">
+                    <input type="submit" class="btn btn-danger btn-sm" value="Delete">
+                </form>
+            </li>
         {% empty %}
-        <p>No notes saved.</p>
+            <li>No notes saved.</li>
         {% endfor %}
-    </div>
+    </ul>
 </div>
 
+<script>
+    document.querySelectorAll('.btn-danger').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to delete this note?')) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
 
 {% endblock %}
