@@ -1,0 +1,17 @@
+{% extends "hotel_pms/index.html" %}
+
+
+{% block content %}
+
+
+
+{% for booking in bookings %}
+    <div>
+        Booking ID: {{ booking.id }}
+        Room: {{ booking.room.name }}
+        <a href="{% url 'booking_details' booking.id %}">View Details</a>
+    </div>
+{% endfor %}
+
+
+{% endblock %}

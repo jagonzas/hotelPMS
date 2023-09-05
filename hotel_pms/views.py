@@ -470,3 +470,25 @@ def guest_detail(request, guest_id):
     return render(request, 'hotel_pms/guest_detail.html', {'guest': guest})
 
 
+#customers view of their bookings 
+
+@login_required
+def view_bookings(request):
+    # Retrieve all bookings for the logged-in user
+    bookings = Booking.objects.filter(customer=request.user)
+    return render(request, 'hotel_pms/view_bookings.html', {'bookings': bookings})
+
+@login_required
+def booking_details(request, booking_id):
+    # Retrieve the specific booking details
+    booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
+    return render(request, 'hotel_pms/booking_details.html', {'booking': booking})
+
+@login_required
+def cancel_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
+    if request.method == 'POST':
+        booking.delete()
+        messages.success(request, "Booking cancelled successfully!")
+        return redirect('view_bookings')
+    return render(request, 'hotel_pms/confirm_cancel.html', {'booking': booking})

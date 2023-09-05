@@ -1,0 +1,21 @@
+{% extends "hotel_pms/index.html" %}
+
+{% block content %}
+
+
+<div>
+    Booking ID: {{ booking.id }}
+    Room: {{ booking.room.name }}
+    Start Date: {{ booking.start_date }}
+    End Date: {{ booking.end_date }}
+    Price: {{ booking.price }}
+    <!-- Add a button to cancel/delete the booking -->
+    <form action="{% url 'cancel_booking' booking.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Cancel Booking</button>
+    </form>
+</div>
+
+
+
+{% endblock %}
