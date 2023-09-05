@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -9,7 +10,7 @@
     <title>My Hotel</title>
     <style>
 .footer {
-    position: fixed;
+    position: relative;
     left: 0;
     bottom: 0;
     width: 100%;
@@ -17,10 +18,10 @@
 </style>
 
     {% load static %}
-    
+    {% load user_tags %}
+
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body style="font-family: 'Open Sans', sans-serif;">
     <header class="mb-4">
@@ -83,7 +84,35 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'register_select' %}">Register</a>
                 </li>
+                {% endif %} 
+
+
+
+
+
+                {% comment %} What the customer will see in navbar                 {% endcomment %}
+                {% if user.is_authenticated and user|has_group:"Customers" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">hmanas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">hmanas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">hmanas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">hmanas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">hmanas</a>
+                </li>
+                
                 {% endif %}
+
+                
+
+
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -91,6 +120,8 @@
                 {% endif %}
             </ul>
         </div>
+        {% comment %} <button id="darkModeToggle" class="btn btn-light ml-auto">Toggle Dark Mode</button> {% endcomment %}
+
     </nav>
 </div>
 
@@ -105,6 +136,39 @@
         <span class="text-muted">© 2023 Hotel PMS Ostaria</span>
     </div>
 </footer>
+<script>
+{% comment %} let toggleButton = document.getElementById("darkModeToggle");
+
+toggleButton.addEventListener("click", function() {
+    console.log("Button clicked!");
+    document.body.classList.toggle("dark-mode");
+}); {% endcomment %}
+document.addEventListener("DOMContentLoaded", function() {
+    const toggleButton = document.getElementById("darkModeToggle");
+    
+    // Toggle dark mode on button click
+    toggleButton.addEventListener("click", function() {
+        const body = document.body;
+        
+        if (body.classList.contains("dark-mode")) {
+            body.classList.remove("dark-mode");
+            localStorage.setItem("dark-mode", "off");
+        } else {
+            body.classList.add("dark-mode");
+            localStorage.setItem("dark-mode", "on");
+        }
+    });
+
+    // Load the user's preference
+    const darkModePreference = localStorage.getItem("dark-mode");
+    
+    if (darkModePreference === "on") {
+        document.body.classList.add("dark-mode");
+    }
+});
+
+
+</script>
 
 </body>
 </html>

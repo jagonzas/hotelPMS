@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, redirect
 from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm, BookingChargeFormSet, BookingCharge
 from django.contrib import messages
@@ -6,15 +7,24 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Room, Booking, Payment, Customer, Staff, StaffRegistrationRequest, AdminNotes ,RoomImage, BookingCharge
+from .models import Room, Booking, Payment, Customer, Employees, StaffRegistrationRequest, AdminNotes ,RoomImage, BookingCharge
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.template.loader import render_to_string
 from django.http import HttpResponse
-
+from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import stripe
 # Add other necessary imports here, such as your forms
 
 
+#Payment keys
+STRIPE_PUBLIC_KEY = settings.STRIPE_PUBLIC_KEY
+STRIPE_SECRET_KEY = settings.STRIPE_SECRET_KEY
+
+
+stripe.api_key = STRIPE_SECRET_KEY
 # Create your views here.
 
 def index(request):
@@ -32,8 +42,24 @@ def home(request):
 def about(request):
     return render(request,'hotel_pms/about.html')
 
+def cheking_employee(request):
+    is_employee = request.user.groups.filter(name='Employees').exists()
+
+    context = {
+        'is_employee': is_employee,
+        # ... any other context data you have ...
+    }
+
+    return render(request, 'che.html', context)
 
 
+
+def calculate_days( start_date, end_date):
+    return (end_date - start_date).days
+
+def calculate_amount(room_rate, start_date, end_date):
+    days = calculate_days(start_date, end_date)
+    return room_rate * days * 100 #Amount in cents
 #REGISTERING
 
 def register_select(request):
@@ -174,19 +200,23 @@ def book_room(request, room_id):
     if request.method == "POST":
         form = BookingForm(request.POST)
         if form.is_valid():
+            print ("form is valid")
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
 
             if room.is_available(start_date, end_date):
-                # Create a new booking instance
-                booking = form.save(commit=False) # don't save to DB yet
+                
+
+                booking = form.save(commit=False)
                 booking.customer = request.user
                 booking.room = room
                 booking.save()
-                return redirect('home')
+                return redirect('payment_page', room_id=room.id, start_date=start_date, end_date=end_date)
+                # return redirect('home')
             else:
                 messages.error(request, 'Room is not available for the selected dates.')
         else:
+            print ("form is invalid")
             messages.error(request, 'There was an error with your booking. Please check the dates and try again.')
 
     else:
@@ -197,10 +227,64 @@ def book_room(request, room_id):
     return render(request, 'hotel_pms/book_room.html', {'form': form, 'room': room})
 
 
+
+
+#Payments: 
+def payment_page(request, room_id, start_date, end_date):
+    room = get_object_or_404(Room, pk=room_id)
+    start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
+    end_date_obj = datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    num_days = (end_date_obj - start_date_obj).days
+    total_cost = room.rate * num_days
+
+    context = {
+        'room': room,
+        'start_date': start_date_obj,
+        'end_date': end_date_obj,
+        'total_cost': total_cost,
+        'stripe_public_key': STRIPE_PUBLIC_KEY
+    }
+    return render(request, 'hotel_pms/payment_page.html', context)
+
+
+#Stripe and actual charge : 
+@login_required
+def make_payment(request):
+    if request.method == "POST":
+        
+        token = request.POST['stripeToken']
+        amount = int(float(request.POST.get('amount', 0)) * 100)
+        
+        
+        if 'stripeToken' in request.POST:
+            token = request.POST['stripeToken']
+        else:
+            messages.error(request, "Payment failed. Stripe token was not received.")
+            return redirect('payment_page')
+
+
+        try:
+            charge = stripe.Charge.create(
+                amount=amount,
+                currency="usd",
+                source=token,
+                description=f"Payment for Room Booking by {request.user.username}"
+            )
+            # Save the charge ID or any other info in your DB if necessary
+            messages.success(request, "Payment successful!")
+            return redirect('home')
+        except stripe.error.CardError as e:
+            messages.error(request, "Your card was declined!")
+    return redirect('payment_page')
+
+
+
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
 def managerooms(request):
-    # Check if the user is authenticated and is a staff member
-    if not request.user.is_authenticated or not request.user.is_staff:
-        return redirect('home')
+   
     
     # Retrieve all rooms
     rooms = Room.objects.all()
@@ -215,11 +299,9 @@ def delete_room(request, pk):
         return redirect('manage')
     return render(request, 'hotel_pms/confirm_delete.html', {'room': room})
 
-
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
 def edit_room(request, room_id):
-    if not request.user.is_authenticated or not request.user.is_staff:
-        return redirect('home')
-
+   
     room = get_object_or_404(Room, id=room_id)
     
     if request.method == 'POST':
@@ -240,7 +322,6 @@ def view_rooms(request):
 
 
 
-#Add room functionality only for admin 
 
 
 
@@ -277,6 +358,8 @@ def list_bookings(request):
     }
     return render(request, 'hotel_pms/list_bookings.html', context)
 
+
+#Add room functionality only for admin 
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
 def add_room(request):
     if request.method == 'POST':

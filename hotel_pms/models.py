@@ -10,7 +10,7 @@ class Customer(models.Model):
 
    
 
-class Staff(models.Model):
+class Employees(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
@@ -108,7 +108,7 @@ class Maintenance(models.Model):
         ('c', 'Completed'),
     )
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    employees = models.ForeignKey(Employees, on_delete=models.CASCADE)
     description = models.TextField()
     status = models.CharField(max_length=1, choices=MAINTENANCE_STATUS)
     created_at = models.DateTimeField(default=timezone.now)

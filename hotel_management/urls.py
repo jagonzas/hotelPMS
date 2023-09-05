@@ -23,6 +23,9 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 from hotel_pms.views import register_guest,register_select,register_staff, login_view
 
+
+#put admin urls before admin.site.urls
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('admin/hotel_rooms/', views.admin_rooms_view, name='admin_rooms'),
@@ -39,6 +42,8 @@ urlpatterns = [
     path('guest_detail/<int:guest_id>/', views.guest_detail, name='guest_detail'),
     path('manage/',views.managerooms, name='manage'),
     path('add_room/', views.add_room, name='add_room'),
+    path('payment/<int:room_id>/<start_date>/<end_date>/', views.payment_page, name='payment_page'),
+    path('make_payment/', views.make_payment, name='make_payment'),
     path('blacklist/', views.blacklist_customers, name='blacklist_customers'),
     path('room/<int:room_id>/book/', views.book_room, name='book_room'),
     path('manage_housekeeping/', views.manage_housekeeping, name='manage_housekeeping'),
@@ -52,5 +57,3 @@ urlpatterns = [
     path('register/staff/', views.register_staff, name='register_staff')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

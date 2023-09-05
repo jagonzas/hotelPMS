@@ -22,3 +22,20 @@ body {
     text-align: center;
 
 }
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-mode .navbar-dark {
+    background-color: #1f1f1f;
+}
+
+.dark-mode .bg-light {
+    background-color: #1f1f1f !important;
+}
+
+.dark-mode .text-muted {
+    color: #b0b0b0 !important;
+}
