@@ -108,9 +108,9 @@ def register_staff(request):
 
 
 #Request for admin to create employee acc (employee ACTION)
-
 def approve_registration(request):
     if request.method == 'POST':
+        # Handle Approvals:
         employee_request_ids = request.POST.getlist('employee_request_id')
         for employee_request_id in employee_request_ids:
             employee_request = StaffRegistrationRequest.objects.get(id=employee_request_id)
@@ -126,9 +126,18 @@ def approve_registration(request):
 
                 messages.success(request, f'Account created for {employee_request.username}.')
 
+        # Handle Denials:
+        deny_employee_request_ids = request.POST.getlist('deny_employee_request_id')
+        for deny_employee_request_id in deny_employee_request_ids:
+            deny_employee_request = StaffRegistrationRequest.objects.get(id=deny_employee_request_id)
+            if deny_employee_request and not deny_employee_request.is_approved:
+                deny_employee_request.delete()  # This deletes the request, but you can also choose to mark it as denied if you add such a field
+                messages.success(request, f'Registration request for {deny_employee_request.username} has been denied and deleted.')
+
     # Get all unapproved registration requests
     employee_requests = StaffRegistrationRequest.objects.filter(is_approved=False)
     return render(request, 'hotel_pms/approve_registration.html', {'employee_requests': employee_requests})
+
 
 
 

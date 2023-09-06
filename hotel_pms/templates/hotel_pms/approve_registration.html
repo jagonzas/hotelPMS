@@ -12,6 +12,7 @@
                     <th scope="col" style="width: 40%;">Username</th>
                     <th scope="col" style="width: 40%;">Staff ID</th>
                     <th scope="col" style="width: 10%;">Approve</th>
+                    <th scope="col" style="width: 10%;">Deny</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,6 +25,11 @@
                         <div class="form-check d-flex justify-content-center">
                             <input class="form-check-input" type="checkbox" name="employee_request_id" value="{{ employee_request.id }}">
                         </div>
+                    </td>
+                    <td>
+                        <div class="form-check d-flex justify-content-center">
+                            <input class="form-check-input" type="checkbox" name="deny_employee_request_id" value="{{ employee_request.id }}">
+                         </div>
                     </td>
                 </tr>
             {% endfor %}
