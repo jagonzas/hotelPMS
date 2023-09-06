@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Receipt</title>
+   
 </head>
 <body>
     <h2>Guest Receipt</h2>
-    <table>
+    <table style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr>
                 <th>Booking ID</th>
@@ -14,18 +15,16 @@
                 <th>Room</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-
             </tr>
         </thead>
         <tbody>
             {% for booking in bookings %}
             <tr>
-                <td>{{ booking.id }}</td>
-                <td>{{ booking.customer.first_name }} {{ booking.customer.last_name }}</td>
-                <td>{{ booking.room.name }}</td>
-                <td>{{ booking.start_date}}</td>
-                <td>{{ booking.end_date}}</td>
-
+                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.id }}</td>
+                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.customer.username }} </td>
+                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.room.name }}</td>
+                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.start_date}}</td>
+                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.end_date}}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -16,6 +16,8 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import stripe
+from xhtml2pdf import pisa
+
 # Add other necessary imports here, such as your forms
 
 
@@ -409,7 +411,8 @@ def manage_housekeeping(request):
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
 def download_receipt(request):
     # Fetch currently reserved bookings
-    bookings = Booking.objects.filter(is_reserved=True)
+    bookings = Booking.objects.all
+    
     
     # Render the data to an HTML string
     html_string = render_to_string('hotel_pms/receipt_template.html', {'bookings': bookings})
