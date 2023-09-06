@@ -15,14 +15,14 @@
                 </tr>
             </thead>
             <tbody>
-            {% for staff_request in staff_requests %}
+            {% for employee_request in employee_requests %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ staff_request.username }}</td>
-                    <td>{{ staff_request.staff_id }}</td>
+                    <td>{{ employee_request.username }}</td>
+                    <td>{{ employee_request.employee_id }}</td>
                     <td>
                         <div class="form-check d-flex justify-content-center">
-                            <input class="form-check-input" type="checkbox" name="staff_request_id" value="{{ staff_request.id }}">
+                            <input class="form-check-input" type="checkbox" name="employee_request_id" value="{{ employee_request.id }}">
                         </div>
                     </td>
                 </tr>

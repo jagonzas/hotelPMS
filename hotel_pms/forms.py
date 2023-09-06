@@ -30,12 +30,12 @@ class CustomerRegisterForm(UserCreationForm):
 
 
 
-class StaffRegisterForm(UserCreationForm):
-    staff_id = forms.CharField()
+class EmployeeRegisterForm(UserCreationForm):
+    employee_id = forms.CharField()
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'staff_id']
+        fields = ['username', 'email', 'password1', 'password2', 'employee_id']
 
 
 class RoomForm(forms.ModelForm):

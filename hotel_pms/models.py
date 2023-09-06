@@ -118,7 +118,7 @@ class Maintenance(models.Model):
 class StaffRegistrationRequest(models.Model):
     username = models.CharField(max_length=150)
     password = models.CharField(max_length=128)
-    staff_id = models.CharField(max_length=20)
+    employee_id = models.CharField(max_length=20)
     is_approved = models.BooleanField(default=False)
 
 

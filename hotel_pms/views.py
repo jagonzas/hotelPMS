@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
-from .forms import StaffRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm, BookingChargeFormSet, BookingCharge
+from .forms import EmployeeRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm, BookingChargeFormSet, BookingCharge
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django import forms
@@ -92,43 +92,43 @@ def register_guest(request):
 
 def register_staff(request):
     if request.method == 'POST':
-        form = StaffRegisterForm(request.POST)
+        form = EmployeeRegisterForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
-            staff_id = form.cleaned_data.get('staff_id')
-            StaffRegistrationRequest.objects.create(username=username, password=password, staff_id=staff_id)
+            employee_id = form.cleaned_data.get('employee_id')
+            StaffRegistrationRequest.objects.create(username=username, password=password, employee_id=employee_id)
             messages.success(request, f'Registration request for {username} has been submitted. You will receive an email once your account has been approved.')
             return redirect('login')
     else:
-        form = StaffRegisterForm()
+        form = EmployeeRegisterForm()
     return render(request, 'hotel_pms/register_staff.html', {'form': form})
 
 
 
 
-#Request for admin to create staff acc (STAFF ACTION)
+#Request for admin to create employee acc (employee ACTION)
 
 def approve_registration(request):
     if request.method == 'POST':
-        staff_request_ids = request.POST.getlist('staff_request_id')
-        for staff_request_id in staff_request_ids:
-            staff_request = StaffRegistrationRequest.objects.get(id=staff_request_id)
-            if staff_request and not staff_request.is_approved:
+        employee_request_ids = request.POST.getlist('employee_request_id')
+        for employee_request_id in employee_request_ids:
+            employee_request = StaffRegistrationRequest.objects.get(id=employee_request_id)
+            if employee_request and not employee_request.is_approved:
                 # Create the staff user and add them to the staff group
-                user = User.objects.create(username=staff_request.username, password=make_password(staff_request.password))
-                group = Group.objects.get(name='Staff')
+                user = User.objects.create(username=employee_request.username, password=make_password(employee_request.password))
+                group = Group.objects.get(name='Employees')
                 user.groups.add(group)
 
                 # Mark the request as approved
-                staff_request.is_approved = True
-                staff_request.save()
+                employee_request.is_approved = True
+                employee_request.save()
 
-                messages.success(request, f'Account created for {staff_request.username}.')
+                messages.success(request, f'Account created for {employee_request.username}.')
 
     # Get all unapproved registration requests
-    staff_requests = StaffRegistrationRequest.objects.filter(is_approved=False)
-    return render(request, 'hotel_pms/approve_registration.html', {'staff_requests': staff_requests})
+    employee_requests = StaffRegistrationRequest.objects.filter(is_approved=False)
+    return render(request, 'hotel_pms/approve_registration.html', {'employee_requests': employee_requests})
 
 
 
