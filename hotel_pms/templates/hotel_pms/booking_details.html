@@ -1,21 +1,23 @@
 {% extends "hotel_pms/index.html" %}
 
 {% block content %}
-
-
-<div>
-    Booking ID: {{ booking.id }}
-    Room: {{ booking.room.name }}
-    Start Date: {{ booking.start_date }}
-    End Date: {{ booking.end_date }}
-    Price: {{ booking.price }}
-    <!-- Add a button to cancel/delete the booking -->
-    <form action="{% url 'cancel_booking' booking.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Cancel Booking</button>
-    </form>
+<div class="container mt-5">
+    <h2 class="mb-4">Booking Details</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Booking ID: {{ booking.id }}</h5>
+            <p class="card-text">
+                <strong>Room:</strong> {{ booking.room.name }}<br>
+                <strong>Start Date:</strong> {{ booking.start_date|date:"F j, Y" }}<br>
+                <strong>End Date:</strong> {{ booking.end_date|date:"F j, Y" }}<br>
+                <strong>Price:</strong> ${{ total_cost }}
+            </p>
+            <!-- Add a button to cancel/delete the booking -->
+            <form action="{% url 'cancel_booking' booking.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Cancel Booking</button>
+            </form>
+        </div>
+    </div>
 </div>
-
-
-
 {% endblock %}

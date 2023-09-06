@@ -1,17 +1,26 @@
 {% extends "hotel_pms/index.html" %}
 
-
 {% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Your Bookings</h2>
 
-
-
-{% for booking in bookings %}
-    <div>
-        Booking ID: {{ booking.id }}
-        Room: {{ booking.room.name }}
-        <a href="{% url 'booking_details' booking.id %}">View Details</a>
-    </div>
-{% endfor %}
-
-
+    <!-- Check if there are any bookings -->
+    {% if bookings %}
+        <div class="list-group">
+            {% for booking in bookings %}
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Booking ID: {{ booking.id }}</h5>
+                        <small><a href="{% url 'booking_details' booking.id %}" class="btn btn-sm btn-primary">View Details</a></small>
+                    </div>
+                    <p class="mb-1">Room: {{ booking.room.name }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            You don't have any bookings yet.
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -478,11 +478,19 @@ def view_bookings(request):
     bookings = Booking.objects.filter(customer=request.user)
     return render(request, 'hotel_pms/view_bookings.html', {'bookings': bookings})
 
+def calculate_total_cost(room, start_date, end_date):
+    num_days = (end_date - start_date).days
+    return room.rate * num_days
+
+
 @login_required
 def booking_details(request, booking_id):
     # Retrieve the specific booking details
     booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
-    return render(request, 'hotel_pms/booking_details.html', {'booking': booking})
+    total_cost = calculate_total_cost(booking.room, booking.start_date, booking.end_date)
+    
+    return render(request, 'hotel_pms/booking_details.html', {'booking': booking, 'total_cost': total_cost})
+
 
 @login_required
 def cancel_booking(request, booking_id):
