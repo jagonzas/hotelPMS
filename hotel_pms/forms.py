@@ -96,3 +96,9 @@ BookingChargeFormSet = forms.inlineformset_factory(
     extra=1, 
     can_delete=True
 )
+
+
+
+class DateSelectionForm(forms.Form):
+    start_date = forms.DateField(widget=forms.SelectDateWidget)
+    end_date = forms.DateField(widget=forms.SelectDateWidget)

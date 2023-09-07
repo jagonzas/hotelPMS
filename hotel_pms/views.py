@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
-from .forms import EmployeeRegisterForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm, BookingChargeFormSet, BookingCharge
+from .forms import EmployeeRegisterForm,DateSelectionForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm, BookingChargeFormSet, BookingCharge
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django import forms
@@ -556,3 +556,37 @@ def generate_receipt_pdf(request, booking_id):
         return HttpResponse('We had some errors <pre>' + html + '</pre>')
 
     return response
+
+
+
+
+
+def select_date_view(request):
+    form = DateSelectionForm()
+    return render(request, 'hotel_pms/select_date.html', {'form': form})
+
+
+
+def fetch_data(request):
+    if request.method == 'POST':
+        form = DateSelectionForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            
+            bookings = Booking.objects.filter(start_date__gte=start_date, end_date__lte=end_date)
+            
+            # Create an HTML template with the bookings data
+            template = get_template('hotel_pms/receipt_template.html')
+            html_content = template.render({'bookings': bookings})
+            
+            # Convert the HTML content to a PDF file
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+            pisa_status = pisa.CreatePDF(html_content, dest=response)
+            if pisa_status.err:
+                return HttpResponse('Error generating PDF', status=500)
+            return response
+    else:
+        form = DateSelectionForm()
+    return render(request, 'hotel_pms/select_date.html', {'form': form})

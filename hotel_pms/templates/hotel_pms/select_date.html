@@ -1,0 +1,12 @@
+
+{% extends 'hotel_pms/index.html' %}
+
+
+{% block content %}
+<form method="POST" action="{% url 'fetch_data' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Download Report</button>
+</form>
+
+{% endblock %}

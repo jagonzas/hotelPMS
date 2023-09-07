@@ -67,7 +67,7 @@
                     <a class="nav-link" href="{% url 'manage' %}">Manage Rooms</a>
                 </li>
                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'download_receipt' %}">Receipt</a>
+                    <a class="nav-link" href="{% url 'select_date' %}">Receipt</a>
                 </li>
                  <li class="nav-item">
                     <a class="nav-link" href="{% url 'approve_registration' %}">Approve Staff</a>
@@ -137,12 +137,7 @@
     </div>
 </footer>
 <script>
-{% comment %} let toggleButton = document.getElementById("darkModeToggle");
 
-toggleButton.addEventListener("click", function() {
-    console.log("Button clicked!");
-    document.body.classList.toggle("dark-mode");
-}); {% endcomment %}
 document.addEventListener("DOMContentLoaded", function() {
     const toggleButton = document.getElementById("darkModeToggle");
     
