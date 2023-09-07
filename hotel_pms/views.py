@@ -17,6 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import stripe
 from xhtml2pdf import pisa
+from django.template.loader import get_template
 
 # Add other necessary imports here, such as your forms
 
@@ -461,6 +462,12 @@ def admin_book_room(request, room_id):
 
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
 def blacklist_customers(request):
+    query = request.GET.get('q')
+    customers = Customer.objects.all()
+    
+    if query:
+        customers = customers.filter(user__username__icontains=query)
+
     if request.method == 'POST':
         user_id = request.POST.get('user_id')
         user = Customer.objects.get(id=user_id)
@@ -468,9 +475,7 @@ def blacklist_customers(request):
         user.save()
         return redirect('blacklist_customers')
 
-    customers = Customer.objects.all()
     return render(request, 'hotel_pms/blacklist.html', {'customers': customers})
-
 
 def view_guests(request):
     guests = Customer.objects.all()
@@ -503,7 +508,6 @@ def booking_details(request, booking_id):
     
     return render(request, 'hotel_pms/booking_details.html', {'booking': booking, 'total_cost': total_cost})
 
-
 @login_required
 def cancel_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
@@ -512,3 +516,43 @@ def cancel_booking(request, booking_id):
         messages.success(request, "Booking cancelled successfully!")
         return redirect('view_bookings')
     return render(request, 'hotel_pms/confirm_cancel.html', {'booking': booking})
+
+
+
+
+def booking_receipt(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    total_cost = calculate_total_cost(booking.room, booking.start_date, booking.end_date)
+    return render(request, 'hotel_pms/booking_receipt.html', {'booking': booking, 'total_cost': total_cost})
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
+def generate_receipt_pdf(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    # Calculate additional fields
+    booking.nights = (booking.end_date - booking.start_date).days
+    booking.rate = booking.room.rate  # Ensure room rate is accessible like this
+
+    # Fetch and calculate total extra charges
+    booking_charges = BookingCharge.objects.filter(booking=booking)
+    total_extra_charges = sum([bc.charge.cost * bc.quantity for bc in booking_charges])
+    
+    booking.total_cost = (booking.nights * booking.rate) + total_extra_charges  # Calculate the total cost including extra charges
+
+    # Load the template
+    template = get_template('hotel_pms/booking_receipt.html')  # Replace with your actual path
+
+    # Render the template with the booking context
+    html = template.render({'booking': booking, 'booking_charges': booking_charges, 'total_extra_charges': total_extra_charges})
+    
+    # Generate the PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="receipt.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    # Check for errors
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+
+    return response

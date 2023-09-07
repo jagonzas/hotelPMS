@@ -56,6 +56,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('register/select/', views.register_select, name='register_select'),
     path('download_receipt/', views.download_receipt, name='download_receipt'),
+    path('booking_receipt/<int:booking_id>/', views.booking_receipt, name='booking_receipt'),
+    path('generate_receipt_pdf/<int:booking_id>/', views.generate_receipt_pdf, name='generate_receipt_pdf'),
     path('register/guest/', views.register_guest, name='register_guest'),
     path('register/staff/', views.register_staff, name='register_staff')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

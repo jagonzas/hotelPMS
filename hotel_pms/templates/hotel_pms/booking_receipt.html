@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt</title>
+</head>
+<body>
+    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+        <img src="C:\Users\30693\Desktop\CapStone\hotel_management\hotel_pms\static\Images\Ostaria_Hotel_Apartments_-_Logo_1.png" alt="Logo" style="width: 100px;">
+        <h2 style="margin-left: 20px;">Guest Receipt</h2>
+    </div>
+    <table style="width: 50%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr>
+            <th style="text-align: left; padding: 8px 12px;">Booking ID</th>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.id }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px 12px;">Primary Guest</th>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.customer.first_name }} {{ booking.customer.last_name }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px 12px;">Room</th>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.room.name }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px 12px;">Start Date</th>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.start_date }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px 12px;">End Date</th>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.end_date }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px 12px;">Number of Nights</th>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.nights }}</td>
+        </tr>
+    </table>
+    
+    <h3>Extra Charges</h3>
+    <table style="width: 50%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr>
+            <th style="text-align: left; padding: 8px 12px; width: 50%;">Charge Type</th>
+            <th style="text-align: left; padding: 8px 12px; width: 25%;">Quantity</th>
+            <th style="text-align: left; padding: 8px 12px; width: 25%;">Cost</th>
+        </tr>
+        {% for booking_charge in booking_charges %}
+        <tr>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking_charge.charge.get_charge_type_display }}</td>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking_charge.quantity }}</td>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking_charge.charge.cost }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td style="border: 1px solid black; padding: 8px 12px; text-align: right;" colspan="2">Total Extra Charges:</td>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ total_extra_charges }}</td>
+        </tr>
+    </table>
+    
+    <table style="width: 50%; border-collapse: collapse;">
+        <tr>
+            <th style="text-align: left; padding: 8px 12px;">Total Cost</th>
+            <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.total_cost }}</td>
+        </tr>
+    </table>
+</body>
+</html>
