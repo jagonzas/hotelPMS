@@ -406,29 +406,6 @@ def manage_housekeeping(request):
 
 
 
-#PDF Receipts
-
-# This needs work
-@user_passes_test(lambda u: u.is_superuser, login_url='login')
-def download_receipt(request):
-    # Fetch currently reserved bookings
-    bookings = Booking.objects.all
-    
-    
-    # Render the data to an HTML string
-    html_string = render_to_string('hotel_pms/receipt_template.html', {'bookings': bookings})
-    
-    # Convert the HTML string to a PDF and write it to the response
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="receipt.pdf"'
-    pisa_status = pisa.CreatePDF(html_string, dest=response)
-
-    if pisa_status.err:
-        return HttpResponse('We had some errors <pre>' + html_string + '</pre>')
-
-    return response
-
-
 
 
 
