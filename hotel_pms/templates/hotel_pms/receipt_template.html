@@ -1,6 +1,5 @@
 {% load custom_filters %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,8 +17,9 @@
                 <th>Booking ID</th>
                 <th>Primary Guest</th>
                 <th>Room</th>
-                <th>Start Date</th>
-                <th>End Date</th>
+                <th>Dates</th>
+                <th>Extra Charges</th>
+                <th>Total Price of Extra Charges</th>
                 <th>Price Before Tax ($)</th>
                 <th>Tax Amount ($)</th>
                 <th>Total Price ($)</th>
@@ -31,40 +31,22 @@
                 <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.id }}</td>
                 <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.customer.first_name }} {{ booking.customer.last_name }}</td>
                 <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.room.name }}</td>
-                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.start_date }}</td>
-                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.end_date }}</td>
+                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.start_date }} - {{ booking.end_date }}</td>
+                <td style="border: 1px solid black; padding: 8px 12px;">
+                    <ul>
+                    {% for charge in booking.extra_charges_details %}
+                        <li>{{ charge.description }} x {{ charge.quantity }}: ${{ charge.total_cost|floatformat:2 }}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+                <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.extra_charges_total_price|floatformat:2 }}</td>
                 <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.price_before_tax|floatformat:2 }}</td>
                 <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.tax_amount|floatformat:2 }}</td>
                 <td style="border: 1px solid black; padding: 8px 12px;">{{ booking.total_price|floatformat:2 }}</td>
             </tr>
-            {% comment %} <tr>
-                <td colspan="8">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr>
-                                <th>Charge Type</th>
-                                <th>Description</th>
-                                <th>Cost</th>
-                                <th>Quantity</th>
-                                <th>Total Cost</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for extra_charge in booking.extra_charges %}
-                            <tr>
-                                <td style="border: 1px solid black; padding: 8px 12px;">{{ extra_charge.charge.get_charge_type_display }}</td>
-                                <td style="border: 1px solid black; padding: 8px 12px;">{{ extra_charge.charge.description }}</td>
-                                <td style="border: 1px solid black; padding: 8px 12px;">{{ extra_charge.charge.cost|floatformat:2 }}</td>
-                                <td style="border: 1px solid black; padding: 8px 12px;">{{ extra_charge.quantity }}</td>
-                                <td style="border: 1px solid black; padding: 8px 12px;">{{ extra_charge.charge.cost|multiply:extra_charge.quantity|floatformat:2 }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </td>
-            </tr> {% endcomment %}
             {% endfor %}
         </tbody>
+
     </table>
 </body>
 </html>

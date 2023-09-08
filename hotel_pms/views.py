@@ -554,37 +554,36 @@ def fetch_data(request):
             
             bookings = Booking.objects.filter(start_date__gte=start_date, end_date__lte=end_date)
             
-            #Calculate price before and after tax for each booking
             for booking in bookings:
-                  # Calculate the number of nights for the booking
                 nights = (booking.end_date - booking.start_date).days
-            
-            # Calculate the total booking fee
                 total_price = booking.room.rate * nights
 
-            # Get the extra charges and add them to the total price
                 extra_charges = BookingCharge.objects.filter(booking=booking)
+                extra_charges_details = []
+                extra_charges_total_price = 0
+
                 for charge in extra_charges:
                     total_price += charge.charge.cost * charge.quantity
-
-                # Calculate the price before tax and the tax amount
+                    extra_charges_details.append({
+                        'description': charge.charge.charge_type,
+                        'quantity': charge.quantity,
+                        'total_cost': charge.charge.cost * charge.quantity
+                    })
+                    extra_charges_total_price += charge.charge.cost * charge.quantity
+                
                 price_before_tax = total_price / Decimal('1.08')
                 tax_amount = total_price - price_before_tax
 
-                # Assign calculated values to booking object (for use in the template)
                 booking.nights = nights
                 booking.total_price = total_price
                 booking.price_before_tax = price_before_tax
                 booking.tax_amount = tax_amount
-                booking.extra_charges = extra_charges
+                booking.extra_charges_details = extra_charges_details
+                booking.extra_charges_total_price = extra_charges_total_price
 
-
-
-            # Create an HTML template with the bookings data
             template = get_template('hotel_pms/receipt_template.html')
             html_content = template.render({'bookings': bookings})
             
-            # Convert the HTML content to a PDF file
             response = HttpResponse(content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="report.pdf"'
             pisa_status = pisa.CreatePDF(html_content, dest=response)
