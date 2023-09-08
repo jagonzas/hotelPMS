@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guest Details</title>
+</head>
+<body>
+    <h2>Customer Detail for {{ guest.user.username }}</h2>
+    <p><strong>Full Name:</strong> {{ guest.user.first_name }} {{ guest.user.last_name }}</p>
+    <p><strong>Email:</strong> {{ guest.user.email }}</p>
+    <p><strong>ID:</strong> {{ guest.id_number }}</p>
+    <img src="{{ request.scheme }}://{{ request.get_host }}{{ guest.id_document.url }}" alt="ID document for {{ guest.user.username }}" style="max-width: 3cm;">
+</body>
+</html>

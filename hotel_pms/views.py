@@ -1,3 +1,4 @@
+from io import BytesIO
 from django.conf import settings
 from django.shortcuts import render, redirect
 from .forms import EmployeeRegisterForm,DateSelectionForm,CustomerRegisterForm, RoomForm , BookingForm, HousekeepingForm, EditBookingForm, BookingChargeFormSet, BookingCharge
@@ -465,6 +466,28 @@ def guest_detail(request, guest_id):
     return render(request, 'hotel_pms/guest_detail.html', {'guest': guest})
 
 
+
+def guest_detail_pdf(request, guest_id):
+    guest = Customer.objects.get(id=guest_id)
+    template_path = 'hotel_pms/guest_detail_pdf.html'
+    context = {'guest': guest,
+               'request':request,
+               }
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="registration.pdf"'
+    
+    template = get_template(template_path)
+    html = template.render(context)
+
+    pisa_status = pisa.CreatePDF(
+       html.encode("ISO-8859-1"), dest=response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
 #customers view of their bookings 
 
 @login_required
@@ -536,6 +559,11 @@ def generate_receipt_pdf(request, booking_id):
     return response
 
 
+#tester
+def test_guest_detail_html(request, guest_id):
+    guest = Customer.objects.get(id=guest_id)
+    context = {'guest': guest}
+    return render(request, 'hotel_pms/guest_detail_pdf.html', context)
 
 
 

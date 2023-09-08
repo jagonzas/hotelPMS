@@ -7,6 +7,8 @@
     <p><strong>Email:</strong> {{ guest.user.email }}</p>
     <p><strong>ID:</strong> {{ guest.id_number }}</p>
     <img src="{{ guest.id_document.url }}" alt="ID document for {{ guest.user.username }}" class="img-fluid" style="max-width: 300px;">
-    <!-- add more fields as necessary -->
+    
+    <a href="{% url 'guest_detail_pdf' guest.id %}" class="btn btn-primary" target="_blank">Print Registration Card</a>
+
 </div>
 {% endblock %}
