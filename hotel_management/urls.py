@@ -55,7 +55,7 @@ urlpatterns = [
     path('manage/edit/<int:room_id>/', views.edit_room, name='edit_room'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('register/select/', views.register_select, name='register_select'),
-    path('download_receipt/', views.download_receipt, name='download_receipt'),
+    # path('download_receipt/', views.download_receipt, name='download_receipt'),
     path('select_date/', views.select_date_view, name='select_date'),
     path('fetch_data/', views.fetch_data, name='fetch_data'),
     path('booking_receipt/<int:booking_id>/', views.booking_receipt, name='booking_receipt'),
