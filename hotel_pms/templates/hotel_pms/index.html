@@ -43,7 +43,15 @@
                 <li class="nav-item">
                      <a class="nav-link" href="{% url 'login' %}">Login</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register_select' %}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
+                </li>
                 {% endif %}
+
+                {% comment %} Admin view  {% endcomment %}
                 {% if user.is_authenticated and user.is_staff %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'add_room' %}">Add Room</a>
@@ -74,18 +82,33 @@
                 </li>
                 {% endif %}
 
-                {% if user.is_authenticated and is_customer %}
-                    <a class="nav-link" href="{% url 'view_rooms' %}">View Rooms</a>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'about' %}">About</a>
-                </li>
-                {% if not user.is_authenticated%}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register_select' %}">Register</a>
-                </li>
-                {% endif %} 
+        
+            
+            {% comment %} Employee view  {% endcomment %}
 
+                {% if user.is_authenticated and user|has_group:"Employees" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">View Bookings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Make Reservation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">View Guests</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Housekeeping</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'view_bookings' %}">Police Report</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Blacklist</a>
+                </li>
+                
+                {% endif %}
+
+                
 
 
 
@@ -110,7 +133,8 @@
                 
                 {% endif %}
 
-                
+
+               
 
 
                 {% if user.is_authenticated %}
