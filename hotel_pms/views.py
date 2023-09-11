@@ -185,7 +185,7 @@ def login_view(request):
 
 #ROOMS
 
-@user_passes_test(lambda u: u.is_superuser, login_url='login')
+@superuser_or_employee_required
 def edit_booking(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id)
 
@@ -419,7 +419,7 @@ def manage_housekeeping(request):
 
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='login')
+@superuser_or_employee_required
 def admin_rooms_view(request):
     rooms = Room.objects.all()
     return render(request, 'hotel_pms/admin_rooms.html', {'rooms': rooms})
