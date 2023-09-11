@@ -11,8 +11,11 @@ class Customer(models.Model):
    
 
 class Employees(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='employee_profile')
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    
+
+
 
 class Room(models.Model):
     ROOM_TYPES = (

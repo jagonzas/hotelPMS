@@ -88,23 +88,27 @@
 
                 {% if user.is_authenticated and user|has_group:"Employees" %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">View Bookings</a>
+                    <a class="nav-link" href="{% url 'list_bookings' %}">View Bookings</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home' %}">Make Reservation</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">View Guests</a>
+                    <a class="nav-link" href="{% url 'view_guests' %}">View Guests</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Housekeeping</a>
+                    <a class="nav-link" href="{% url 'manage_housekeeping' %}">Housekeeping</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'view_bookings' %}">Police Report</a>
+                    <a class="nav-link" href="{% url 'select_date' %}">Police Report</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Blacklist</a>
+                    <a class="nav-link" href="{% url 'blacklist_customers' %}">Blacklist</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Rooms</a>
+                </li>
+                
                 
                 {% endif %}
 

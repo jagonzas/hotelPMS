@@ -30,7 +30,16 @@ STRIPE_SECRET_KEY = settings.STRIPE_SECRET_KEY
 
 
 stripe.api_key = STRIPE_SECRET_KEY
-# Create your views here.
+
+# to check if admin or employee, to be used in future view functions
+def superuser_or_employee_required(view_func):
+    def _wrapped_view_func(request, *args, **kwargs):
+        if not (request.user.is_superuser or hasattr(request.user, 'employee_profile')):
+            return redirect('login')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view_func
+
+
 
 def index(request):
     return render(request,'hotel_pms/index.html')
@@ -346,10 +355,9 @@ def save_notes(request):
             AdminNotes.objects.create(note=note_text)
         return redirect('list_bookings')  # Redirect back to the booking list after saving.
 
-@login_required
+@superuser_or_employee_required
 def list_bookings(request):
-    if not request.user.is_staff: # or `if not request.user.is_superuser:` if you want to restrict this only to superusers.
-        return redirect('home') # or some other page
+    
 
 
     admin_notes = AdminNotes.objects.all().order_by('-timestamp')
@@ -390,7 +398,7 @@ def add_room(request):
     return render(request, 'hotel_pms/add_room.html', {'form': form})
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='login')
+@superuser_or_employee_required
 def manage_housekeeping(request):
     rooms = Room.objects.all()
     if request.method == 'POST':
@@ -416,7 +424,7 @@ def admin_rooms_view(request):
     rooms = Room.objects.all()
     return render(request, 'hotel_pms/admin_rooms.html', {'rooms': rooms})
 
-@user_passes_test(lambda u: u.is_superuser, login_url='login')
+@superuser_or_employee_required
 def admin_book_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
 
@@ -439,7 +447,7 @@ def admin_book_room(request, room_id):
 
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='login')
+@superuser_or_employee_required
 def blacklist_customers(request):
     query = request.GET.get('q')
     customers = Customer.objects.all()
@@ -621,3 +629,6 @@ def fetch_data(request):
     else:
         form = DateSelectionForm()
     return render(request, 'hotel_pms/select_date.html', {'form': form})
+
+
+
