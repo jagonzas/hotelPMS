@@ -465,8 +465,15 @@ def blacklist_customers(request):
     return render(request, 'hotel_pms/blacklist.html', {'customers': customers})
 
 def view_guests(request):
-    guests = Customer.objects.all()
-    return render(request, 'hotel_pms/view_guests.html', {'guests': guests})
+    query = request.GET.get('query')
+
+    customers = Customer.objects.all()
+    
+
+    if query:
+        customers = customers.filter(user__username__icontains=query)
+
+    return render(request, 'hotel_pms/view_guests.html', {'customers': customers})
 
 
 def guest_detail(request, guest_id):
@@ -474,7 +481,7 @@ def guest_detail(request, guest_id):
     return render(request, 'hotel_pms/guest_detail.html', {'guest': guest})
 
 
-
+@superuser_or_employee_required
 def guest_detail_pdf(request, guest_id):
     guest = Customer.objects.get(id=guest_id)
     template_path = 'hotel_pms/guest_detail_pdf.html'
@@ -539,9 +546,10 @@ def booking_receipt(request, booking_id):
 def generate_receipt_pdf(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     
-    # Calculate additional fields
+    # Calculating nights and amount 
     booking.nights = (booking.end_date - booking.start_date).days
-    booking.rate = booking.room.rate  # Ensure room rate is accessible like this
+    booking.rate = booking.room.rate 
+
 
     # Fetch and calculate total extra charges
     booking_charges = BookingCharge.objects.filter(booking=booking)
@@ -567,13 +575,12 @@ def generate_receipt_pdf(request, booking_id):
     return response
 
 
-#tester
-def test_guest_detail_html(request, guest_id):
-    guest = Customer.objects.get(id=guest_id)
-    context = {'guest': guest}
-    return render(request, 'hotel_pms/guest_detail_pdf.html', context)
 
 
+
+
+
+#2 functions for police report between given dates
 
 def select_date_view(request):
     form = DateSelectionForm()
@@ -629,6 +636,9 @@ def fetch_data(request):
     else:
         form = DateSelectionForm()
     return render(request, 'hotel_pms/select_date.html', {'form': form})
+
+
+
 
 
 

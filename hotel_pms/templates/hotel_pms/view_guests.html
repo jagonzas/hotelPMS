@@ -2,16 +2,35 @@
 
 {% block content %}
 <style>
-
-.list-group{
-    padding-bottom:100px;
+.list-group {
+    max-height: 500px;
+    margin-bottom: 10px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 }
-
+.list-group-item {
+    width: 100%;
+}
+.search-bar {
+    margin-bottom: 20px;
+}
 </style>
 <div class="container mt-5">
     <h2 class="mb-4">View Customers</h2>
+
+    <div class="search-bar mb-3">
+        <form method="GET" action="">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search guests..." name="query" value="{{ request.GET.query }}">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <div class="list-group">
-    {% for customer in guests %}
+    {% for customer in customers %}
         <div class="list-group-item d-flex justify-content-between align-items-center">
             <span>
                 {{ customer.user.username }}
