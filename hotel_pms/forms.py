@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Room, Customer, Booking, BookingCharge
+from .models import Room, Customer, Booking, BookingCharge, Employees
 
 
 class CustomerRegisterForm(UserCreationForm):
@@ -29,14 +29,28 @@ class CustomerRegisterForm(UserCreationForm):
         return user
 
 
-
 class EmployeeRegisterForm(UserCreationForm):
-    employee_id = forms.CharField()
+    first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
+    employee_id = forms.CharField(max_length=50, required=True, help_text='Required.')
+    profile_picture = forms.ImageField(required=False, help_text='Optional.')
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'employee_id']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'employee_id', 'profile_picture']
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        if commit:
+            user.save()
+
+        employee_profile = Employees(user=user, employee_id=self.cleaned_data['employee_id'], profile_picture=self.cleaned_data['profile_picture'])
+        employee_profile.save()
+
+        return user
 
 class RoomForm(forms.ModelForm):
     class Meta:
