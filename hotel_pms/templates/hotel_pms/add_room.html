@@ -1,15 +1,80 @@
 {% extends 'hotel_pms/index.html' %}
 {% block content %}
+<style>
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.field-container {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+}
+
+.field-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.field-container input, .field-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.field-container input[type="file"] {
+    padding: 0;
+}
+
+.submit-btn {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #4cae4c;
+}
+</style>
+
 <div class="container">
-    <h2>Add Room</h2>
+    <h2>Room Creation Form</h2>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-
+        
+        {% for field in form %}
+        <div class="field-container">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% if field.name == "rate" %}
+            <div style="display: flex; align-items: center;">
+                <span style="margin-right: 10px;">د.ا</span>
+                {{ field }}
+            </div>
+            {% else %}
+            {{ field }}
+            {% endif %}
+        </div>
+        {% endfor %}
+        
         <label for="images">Room Images:</label>
         <input type="file" name="images" id="images" multiple>
         
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary submit-btn">Submit</button>
     </form>
 </div>
 {% endblock %}

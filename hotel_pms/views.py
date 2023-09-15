@@ -466,9 +466,7 @@ def blacklist_customers(request):
 
 def view_guests(request):
     query = request.GET.get('query')
-
     customers = Customer.objects.all()
-    
 
     if query:
         customers = customers.filter(user__username__icontains=query)
@@ -542,7 +540,7 @@ def booking_receipt(request, booking_id):
     return render(request, 'hotel_pms/booking_receipt.html', {'booking': booking, 'total_cost': total_cost})
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='login')
+@superuser_or_employee_required
 def generate_receipt_pdf(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     

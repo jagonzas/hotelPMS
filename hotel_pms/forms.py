@@ -58,7 +58,7 @@ class RoomForm(forms.ModelForm):
         fields = ['name','room_type','rate']
         widgets = {
             'room_type': forms.Select(choices=Room.ROOM_TYPES),
-            'rate': forms.NumberInput(attrs={'step': "0.01", 'min': "0"}),
+            'rate': forms.NumberInput(attrs={'step': "0.01", 'min': "0", 'placeholder': 'د.ا'}),
             'image': forms.FileInput()
         }
 
