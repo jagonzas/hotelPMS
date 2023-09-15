@@ -1,22 +1,79 @@
 {% extends "hotel_pms/index.html" %}
-{% load static %}
+
 {% block content %}
-<div class="container">
+<style>
+    .content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .table thead {
+        background-color: #f7f7f7;
+    }
+
+    .table, .table th, .table td {
+        border: 1px solid #ccc;
+    }
+
+    .table th, .table td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .table th {
+        text-align: left;
+    }
+
+    .table td a {
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-right: 10px; /* Adding space between buttons */
+    }
+
+    .table td a.btn-primary {
+        background-color: #007BFF;
+        color: #FFF;
+    }
+
+    .table td a.btn-danger {
+        background-color: #dc3545;
+        color: #FFF;
+    }
+
+    .table td a:hover {
+        opacity: 0.7;
+    }
+</style>
+<div class="content">
     <h2>Manage Rooms</h2>
+
     <table class="table">
         <thead>
-            <tr>  
-                <th scope="col">Name</th> <!-- Replaced 'Image' with 'Name' -->
-                <th scope="col">Type</th>
-                <th scope="col">Status</th>
-                <th scope="col">Rate</th>
-                <th scope="col">Actions</th>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Rate</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for room in rooms %}
+            {% for room in rooms %}
             <tr>
-                <th scope="row">{{ room.name }}</th> <!-- Display room name instead of image -->
+                <td>{{ room.name }}</td>
                 <td>{{ room.get_room_type_display }}</td>
                 <td>{{ room.get_status_display }}</td>
                 <td>{{ room.rate }}</td>
@@ -25,7 +82,7 @@
                     <a href="{% url 'delete_room' room.id %}" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
     </table>
 </div>

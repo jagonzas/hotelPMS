@@ -1,14 +1,81 @@
 {% extends "hotel_pms/index.html" %}
 
 {% block content %}
-<h2>All Rooms</h2>
+<style>
+    .content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
 
-<ul>
-{% for room in rooms %}
-    <li>{{ room.name }} ({{ room.get_room_type_display }}) - <a href="{% url 'admin_book_room' room.id %}">Create Booking</a></li>
-{% empty %}
-    <li>No rooms listed.</li>
-{% endfor %}
-</ul>
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .table thead {
+        background-color: #f7f7f7;
+    }
+
+    .table, .table th, .table td {
+        border: 1px solid #ccc;
+    }
+
+    .table th, .table td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .table th {
+        text-align: left;
+    }
+
+    .table td a {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: #FFF;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .table td a:hover {
+        background-color: #0056b3;
+    }
+
+    .no-rooms {
+        text-align: center;
+    }
+</style>
+<div class="content">
+    <h2>All Rooms</h2>
+
+    {% if rooms %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Room Name</th>
+                <th>Room Type</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms %}
+            <tr>
+                <td>{{ room.name }}</td>
+                <td>{{ room.get_room_type_display }}</td>
+                <td><a href="{% url 'admin_book_room' room.id %}">Create Booking</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="no-rooms">No rooms listed.</p>
+    {% endif %}
+</div>
 {% endblock %}
