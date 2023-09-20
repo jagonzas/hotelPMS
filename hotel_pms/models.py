@@ -12,6 +12,7 @@ class Customer(models.Model):
 
 class Employees(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='employee_profile')
+    employee_id = models.TextField(max_length=5, unique=True, null= True , blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     
 
@@ -122,6 +123,9 @@ class StaffRegistrationRequest(models.Model):
     username = models.CharField(max_length=150)
     password = models.CharField(max_length=128)
     employee_id = models.CharField(max_length=20)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField(max_length=254, null=True)
     is_approved = models.BooleanField(default=False)
 
 

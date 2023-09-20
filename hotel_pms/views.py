@@ -104,23 +104,6 @@ def register_guest(request):
     return render(request, 'hotel_pms/register_guest.html', {'form': form})
 
 
-def register_staff(request):
-    if request.method == 'POST':
-        form = EmployeeRegisterForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            employee_id = form.cleaned_data.get('employee_id')
-            StaffRegistrationRequest.objects.create(username=username, password=password, employee_id=employee_id)
-            messages.success(request, f'Registration request for {username} has been submitted. You will receive an email once your account has been approved.')
-            return redirect('login')
-    else:
-        form = EmployeeRegisterForm()
-    return render(request, 'hotel_pms/register_staff.html', {'form': form})
-
-
-
-
 #Request for admin to create employee acc (employee ACTION)
 def approve_registration(request):
     if request.method == 'POST':
@@ -130,9 +113,21 @@ def approve_registration(request):
             employee_request = StaffRegistrationRequest.objects.get(id=employee_request_id)
             if employee_request and not employee_request.is_approved:
                 # Create the staff user and add them to the staff group
-                user = User.objects.create(username=employee_request.username, password=make_password(employee_request.password))
+                user = User.objects.create(
+                    username=employee_request.username,
+                    password=make_password(employee_request.password),
+                    first_name=employee_request.first_name,
+                    last_name=employee_request.last_name,
+                    email=employee_request.email,
+                )
+                
                 group = Group.objects.get(name='Employees')
                 user.groups.add(group)
+
+                #Create an employee profile for the new user
+                employee_profile = Employees(user=user, employee_id = employee_request.employee_id)
+                employee_profile.save()
+
 
                 # Mark the request as approved
                 employee_request.is_approved = True
@@ -151,6 +146,32 @@ def approve_registration(request):
     # Get all unapproved registration requests
     employee_requests = StaffRegistrationRequest.objects.filter(is_approved=False)
     return render(request, 'hotel_pms/approve_registration.html', {'employee_requests': employee_requests})
+
+
+
+
+
+def register_staff(request):
+    if request.method == 'POST':
+        form = EmployeeRegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            employee_id = form.cleaned_data.get('employee_id')
+            StaffRegistrationRequest.objects.create(
+                username=username, 
+                password=password,
+                employee_id=employee_id,
+                first_name=form.cleaned_data.get('first_name'),
+                last_name=form.cleaned_data.get('last_name'),
+                email=form.cleaned_data.get('email'),
+                )
+            messages.success(request, f'Registration request for {username} has been submitted. You will receive an email once your account has been approved.')
+            return redirect('login')
+    else:
+        form = EmployeeRegisterForm()
+    return render(request, 'hotel_pms/register_staff.html', {'form': form})
+
 
 
 
